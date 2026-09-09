@@ -1,0 +1,41 @@
+{% extends 'auth/layout.html.twig' %}
+
+{% block auth_title %}Registration{% endblock %}
+{% block auth_heading %}Start Registration{% endblock %}
+{% block auth_subheading %}Verify with your registration number and mobile number{% endblock %}
+
+{% block auth_content %}
+<form method="post" action="{{ base_path }}/register" class="space-y-4">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+    <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Educational registration number
+            <span class="text-rose-500">*</span>
+        </label>
+        <input type="text" name="educational_registration_no" value="{{ old.educational_registration_no }}" placeholder="e.g. EDU-2026-0001"
+               class="w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 {{ errors.educational_registration_no ? 'border-rose-300 bg-rose-50' : 'border-slate-200' }}">
+        {% if errors.educational_registration_no %}<p class="text-xs text-rose-600 mt-1.5">{{ errors.educational_registration_no }}</p>{% endif %}
+    </div>
+
+    <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Mobile number
+            <span class="text-rose-500">*</span>
+        </label>
+        <input type="text" name="phone_no" value="{{ old.phone_no }}" placeholder="e.g. 01XXXXXXXXX"
+               class="w-full rounded-xl border px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 {{ errors.phone_no ? 'border-rose-300 bg-rose-50' : 'border-slate-200' }}">
+        {% if errors.phone_no %}<p class="text-xs text-rose-600 mt-1.5">{{ errors.phone_no }}</p>{% endif %}
+    </div>
+
+    <button type="submit"
+            class="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 text-sm transition shadow-lg shadow-indigo-200">
+        Verify & Continue →
+    </button>
+</form>
+
+<p class="mt-5 text-center text-sm text-slate-500">
+    Already have an account?
+    <a href="{{ base_path }}/login" class="text-indigo-600 font-semibold hover:text-indigo-700">Sign in</a>
+</p>
+{% endblock %}

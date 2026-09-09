@@ -1,0 +1,86 @@
+{% extends 'app/layout.html.twig' %}
+
+{% block page_title %}Class Routine{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <div>
+        <h1 class="text-2xl font-extrabold text-slate-900">Class Routine</h1>
+        <p class="text-sm text-slate-500 mt-1">
+            {% if batch %}{{ batch.name }}{% else %}Batch{% endif %} - your class schedule.
+        </p>
+    </div>
+</div>
+
+{% if batch is null %}
+<div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-12 text-center">
+    <h2 class="text-lg font-bold text-slate-800">No batch assigned</h2>
+    <p class="text-sm text-slate-500 mt-1">No batch has been assigned to your account yet. Please contact the administrator.</p>
+</div>
+{% elseif upcoming is empty and past is empty %}
+<div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-12 text-center">
+    <h2 class="text-lg font-bold text-slate-800">No classes yet</h2>
+    <p class="text-sm text-slate-500 mt-1">No routine has been added for this batch yet.</p>
+</div>
+{% else %}
+
+{% if upcoming is not empty %}
+<div class="space-y-6">
+    {% for item in upcoming %}
+    <div class="rounded-2xl ring-1 shadow-sm p-5 {{ item.is_today ? 'bg-indigo-50 ring-indigo-200' : 'bg-white ring-slate-100' }}">
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="font-bold text-slate-900">{{ item.session_date|date('d M Y') }}</span>
+            {% if item.is_today %}
+            <span class="text-xs font-bold text-white bg-indigo-600 px-2 py-0.5 rounded-full">Today</span>
+            {% endif %}
+            <span class="text-xs text-slate-400">{{ item.course }}</span>
+        </div>
+        <div class="flex items-start justify-between gap-4">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-extrabold text-indigo-600">{{ item.start_time }}</span>
+                    <span class="text-sm text-slate-400">-</span>
+                    <span class="text-sm font-extrabold text-slate-700">{{ item.end_time }}</span>
+                </div>
+                <p class="font-semibold text-slate-800 mt-1.5">{{ item.topic }}</p>
+                <div class="flex flex-wrap gap-4 mt-2 text-xs text-slate-500">
+                    {% if item.room %}<span>Room: <span class="font-semibold text-slate-700">{{ item.room }}</span></span>{% endif %}
+                    {% if item.mentor %}<span>Mentor: <span class="font-semibold text-slate-700">{{ item.mentor }}</span></span>{% endif %}
+                </div>
+            </div>
+            {% if item.meeting_link %}
+            <a href="{{ item.meeting_link }}" target="_blank" rel="noopener"
+               class="shrink-0 inline-flex items-center gap-1 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 transition">
+                Join meeting
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if past is not empty %}
+<div class="mt-8">
+    <h2 class="text-sm font-bold uppercase tracking-wide text-slate-400 mb-3">Past classes</h2>
+    <div class="space-y-3">
+        {% for item in past %}
+        <div class="rounded-2xl ring-1 ring-slate-100 bg-slate-50 p-4 opacity-70">
+            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                <span class="font-bold text-slate-600">{{ item.session_date|date('d M Y') }}</span>
+                <span class="text-xs text-slate-400">{{ item.course }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-slate-500">{{ item.start_time }}</span>
+                <span class="text-sm text-slate-300">-</span>
+                <span class="text-sm font-bold text-slate-500">{{ item.end_time }}</span>
+                <span class="text-sm font-medium text-slate-600 ml-2">{{ item.topic }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endif %}
+{% endblock %}

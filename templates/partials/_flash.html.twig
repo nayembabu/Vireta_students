@@ -1,0 +1,10 @@
+{% if flash is defined and flash|length %}
+    {% for item in flash %}
+        <div class="mb-4 rounded-xl px-4 py-3 text-sm font-medium ring-1
+            {% if item.status == 'success' %}bg-emerald-50 text-emerald-700 ring-emerald-200
+            {% elseif item.status == 'error' %}bg-rose-50 text-rose-700 ring-rose-200
+            {% else %}bg-sky-50 text-sky-700 ring-sky-200{% endif %}">
+            {{ item.message }}
+        </div>
+    {% endfor %}
+{% endif %}

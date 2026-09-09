@@ -44,10 +44,16 @@ return [
         // Global template vars
         $twig->getEnvironment()->addGlobal('app_name', $environment['app_name']);
         $twig->getEnvironment()->addGlobal('app_version', $environment['app_version']);
+        $twig->getEnvironment()->addGlobal('base_path', \App\Support\BasePath::detect($_SERVER));
 
         $twig->getEnvironment()->addFunction(new TwigFunction('asset', function (string $asset): string {
             $basePath = \App\Support\BasePath::detect($_SERVER);
             return $basePath . '/assets/' . ltrim($asset, '/');
+        }));
+
+        $twig->getEnvironment()->addFunction(new TwigFunction('upload', function (string $path): string {
+            $basePath = \App\Support\BasePath::detect($_SERVER);
+            return $basePath . '/uploads/' . ltrim($path, '/');
         }));
 
         return $twig;
@@ -104,32 +110,28 @@ return [
     },
 
     // Session
-    \Odan\Session\SessionInterface::class => function ($container) {
+    \Odan\Session\PhpSession::class => function ($container) {
         $settings = $container->get('settings')['session'];
 
-        $sessionId = (string)($settings['name'] ?? 'vireta_session');
-
-        // Apply PHP session options
-        $lifetime = (int)($settings['lifetime'] ?? 7200);
-        $path = (string)($settings['path'] ?? '/');
-        $secure = (bool)($settings['secure'] ?? false);
-        $httponly = (bool)($settings['httponly'] ?? true);
-        $samesite = (string)($settings['samesite'] ?? 'Lax');
-
-        ini_set('session.name', $sessionId);
-        ini_set('session.gc_maxlifetime', (string)$lifetime);
-        ini_set('session.cookie_lifetime', (string)$lifetime);
-        ini_set('session.cookie_path', $path);
-        ini_set('session.cookie_httponly', $httponly ? '1' : '0');
-        session_set_cookie_params([
-            'lifetime' => $lifetime,
-            'path' => $path,
-            'secure' => $secure,
-            'httponly' => $httponly,
-            'samesite' => $samesite,
+        // odan/session v6 options; unknown keys are passed to ini_set('session.' . $key)
+        return new \Odan\Session\PhpSession([
+            'name' => (string)($settings['name'] ?? 'vireta_session'),
+            'lifetime' => (int)($settings['lifetime'] ?? 7200),
+            'path' => (string)($settings['path'] ?? '/'),
+            'domain' => null,
+            'secure' => (bool)($settings['secure'] ?? false),
+            'httponly' => (bool)($settings['httponly'] ?? true),
+            'cache_limiter' => 'nocache',
+            'cookie_samesite' => (string)($settings['samesite'] ?? 'Lax'),
         ]);
+    },
 
-        return new \Odan\Session\PhpSession();
+    \Odan\Session\SessionManagerInterface::class => function ($container) {
+        return $container->get(\Odan\Session\PhpSession::class);
+    },
+
+    \Odan\Session\SessionInterface::class => function ($container) {
+        return $container->get(\Odan\Session\PhpSession::class);
     },
 
     // Symfony Mailer
@@ -142,7 +144,17 @@ return [
             $settings['host'],
             $settings['port']
         );
-        $transport = \Symfony\Component\Mailer\Transport\Transport::fromDsn($dsn);
+        $transport = \Symfony\Component\Mailer\Transport::fromDsn($dsn);
         return new \Symfony\Component\Mailer\Mailer($transport);
+    },
+
+    // Auth
+    \App\Auth\AuthService::class => function ($container) {
+        return new \App\Auth\AuthService($container->get(\Odan\Session\SessionManagerInterface::class));
+    },
+
+    // Flash messages
+    \App\Support\Flash::class => function ($container) {
+        return new \App\Support\Flash($container->get(\Odan\Session\SessionInterface::class));
     },
 ];

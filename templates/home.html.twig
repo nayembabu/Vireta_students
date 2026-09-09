@@ -1,73 +1,725 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome • {{ app_name }}{% endblock %}
+{% block title %}{{ app_name }} • Training Center{% endblock %}
 
 {% block body %}
-<div class="min-h-full">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="h-9 w-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">V</div>
-                <h1 class="text-lg font-semibold text-slate-900">{{ app_name }}</h1>
-            </div>
-            <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
-                &bull; Sprint 1 Setup Running
+{# ====================================================================== #
+   TOP BAR (light)
+# ====================================================================== #}
+<div class="bg-slate-900 text-slate-300">
+    <div class="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 text-xs sm:px-6 lg:px-8">
+        <div class="flex items-center gap-5">
+            <span class="hidden items-center gap-1.5 sm:flex">
+                <svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z"/></svg>
+                +880 1700-000000
+            </span>
+            <span class="hidden items-center gap-1.5 md:flex">
+                <svg class="h-3.5 w-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"/><path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"/></svg>
+                hello@viretadev.com
             </span>
         </div>
-    </header>
+        <p class="flex items-center gap-2 font-semibold text-white">
+            <span class="relative flex h-2 w-2">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+            </span>
+            Admission Open — Batch 2026
+        </p>
+    </div>
+</div>
 
-    <main>
-        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                    Intern Student Portal
-                </h2>
-                <p class="mt-3 text-lg text-slate-600">
-                    Slim 4 + Twig + HTMX + Tailwind — Foundation ready.
+{# ====================================================================== #
+   NAVBAR (light)
+# ====================================================================== #}
+<nav id="site-nav" class="sticky top-0 z-50 border-b border-slate-200/70 bg-[#faf9f6]/85 backdrop-blur-md">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+            <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+                <img src="{{ upload('logo/logo2.png') }}" alt="{{ app_name }}" class="h-10 w-auto">
+                <span class="font-display text-lg font-bold tracking-tight text-slate-900">Vireta<span class="text-gradient">Dev</span></span>
+            </a>
+
+            <div class="hidden items-center gap-7 md:flex" id="nav-links">
+                <a href="{{ url_for('home') }}" class="text-sm font-semibold text-indigo-600">Home</a>
+                <a href="#courses" class="text-sm font-medium text-slate-600 transition hover:text-slate-900">Courses</a>
+                <a href="#why" class="text-sm font-medium text-slate-600 transition hover:text-slate-900">Why us</a>
+                <a href="#steps" class="text-sm font-medium text-slate-600 transition hover:text-slate-900">Admission</a>
+                <a href="#success" class="text-sm font-medium text-slate-600 transition hover:text-slate-900">Success</a>
+            </div>
+
+            <div class="hidden items-center gap-3 md:flex">
+                <a href="{{ url_for('login') }}" class="rounded-lg px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">
+                    Sign in
+                </a>
+                <a href="{{ url_for('register') }}" class="btn-shine rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:bg-indigo-700">
+                    Admission Open
+                </a>
+            </div>
+
+            <button id="nav-toggle" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden" aria-label="Toggle menu">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
+    </div>
+    <div id="nav-menu" class="hidden border-t border-slate-200 bg-[#faf9f6]/95 px-4 pb-4 pt-2 backdrop-blur-xl md:hidden">
+        <a href="{{ url_for('home') }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-indigo-600 hover:bg-indigo-50">Home</a>
+        <a href="#courses" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Courses</a>
+        <a href="#why" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Why us</a>
+        <a href="#steps" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Admission</a>
+        <a href="#success" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Success</a>
+        <div class="mt-3 flex gap-3">
+            <a href="{{ url_for('login') }}" class="flex-1 rounded-lg border border-slate-300 px-4 py-2 text-center text-sm font-semibold text-slate-700">Sign in</a>
+            <a href="{{ url_for('register') }}" class="flex-1 rounded-lg bg-indigo-600 px-4 py-2 text-center text-sm font-semibold text-white">Admission Open</a>
+        </div>
+    </div>
+</nav>
+
+{# ====================================================================== #
+   HERO (light, warm)
+# ====================================================================== #}
+<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28">
+    {# soft background wash #}
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="absolute -top-32 -left-32 h-[30rem] w-[30rem] rounded-full bg-indigo-200/40 blur-3xl"></div>
+        <div class="absolute top-1/4 -right-32 h-[26rem] w-[26rem] rounded-full bg-amber-200/40 blur-3xl"></div>
+        <div class="bg-dots absolute inset-0 opacity-60"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr]">
+            {# ---- Left: copy ---- #}
+            <div class="text-center lg:text-left">
+                <div class="reveal inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-4 py-1.5 text-sm font-semibold text-indigo-700 shadow-sm">
+                    <svg class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z" clip-rule="evenodd"/></svg>
+                    Govt. approved training center
+                </div>
+
+                <h1 class="reveal reveal-delay-1 mt-6 font-display text-[2.6rem] font-bold leading-[1.08] tracking-tight text-slate-900 sm:text-6xl lg:text-[4.2rem]">
+                    Shape your future with
+                    <span class="relative inline-block">
+                        <em class="text-gradient not-italic">hands-on</em>
+                        <svg class="absolute -bottom-2 left-0 w-full text-amber-400" viewBox="0 0 220 12" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9C60 3 160 3 217 9" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+                    </span>
+                    tech training
+                </h1>
+
+                <p class="reveal reveal-delay-2 mx-auto mt-6 max-w-xl text-lg leading-relaxed text-slate-600 lg:mx-0">
+                    Learn from industry mentors, work on real projects, track your attendance and assignments —
+                    everything in one modern training portal built for serious learners.
                 </p>
+
+                <div class="reveal reveal-delay-3 mt-9 flex flex-col items-center gap-4 sm:flex-row lg:justify-start sm:justify-center">
+                    <a href="{{ url_for('register') }}" class="btn-shine group w-full rounded-xl bg-indigo-600 px-8 py-3.5 text-center text-base font-bold text-white shadow-xl shadow-indigo-500/30 transition hover:bg-indigo-700 sm:w-auto">
+                        Enroll Now — It's Free
+                        <svg class="ml-1.5 inline-block h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3"/></svg>
+                    </a>
+                    <a href="#courses" class="w-full rounded-xl border border-slate-300 bg-white px-8 py-3.5 text-center text-base font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 sm:w-auto">
+                        Browse Courses
+                    </a>
+                </div>
+
+                <div class="reveal reveal-delay-3 mt-10 flex items-center justify-center gap-4 lg:justify-start">
+                    <div class="flex -space-x-2.5">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-[11px] font-bold text-white ring-2 ring-[#faf9f6]">RS</div>
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-orange-600 text-[11px] font-bold text-white ring-2 ring-[#faf9f6]">TM</div>
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-[11px] font-bold text-white ring-2 ring-[#faf9f6]">AK</div>
+                        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-rose-500 to-pink-600 text-[11px] font-bold text-white ring-2 ring-[#faf9f6]">+9</div>
+                    </div>
+                    <p class="text-sm text-slate-500">
+                        <span class="font-bold text-slate-900">150+ learners</span> trained · 4.9/5 rating
+                    </p>
+                </div>
             </div>
 
-            <!-- Tech stack cards -->
-            <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 font-bold">S4</div>
-                    <h3 class="mt-4 font-semibold text-slate-900">Slim 4</h3>
-                    <p class="mt-1 text-sm text-slate-500">PHP micro-framework, PSR-7 routing & middleware</p>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-700 font-bold">Tw</div>
-                    <h3 class="mt-4 font-semibold text-slate-900">Twig</h3>
-                    <p class="mt-1 text-sm text-slate-500">Secure & fast templating engine for views</p>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50 text-sky-700 font-bold">HX</div>
-                    <h3 class="mt-4 font-semibold text-slate-900">HTMX</h3>
-                    <p class="mt-1 text-sm text-slate-500">Server-driven UI — dynamic pages without JS fatigue</p>
-                </div>
-                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-700 font-bold">TW</div>
-                    <h3 class="mt-4 font-semibold text-slate-900">Tailwind</h3>
-                    <p class="mt-1 text-sm text-slate-500">Utility-first CSS for beautiful, responsive UI</p>
-                </div>
-            </div>
+            {# ---- Right: course-card collage ---- #}
+            <div class="reveal reveal-delay-2 relative mx-auto w-full max-w-md lg:max-w-none">
+                <div class="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-tr from-indigo-200/50 via-transparent to-amber-200/50 blur-2xl" aria-hidden="true"></div>
 
-            <!-- HTMX live demo -->
-            <div class="mt-10 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 class="font-semibold text-slate-900">HTMX live demo</h3>
-                <p class="mt-1 text-sm text-slate-500">Click the button — it calls /ping via AJAX, no page reload, no hand-written JS.</p>
-                <button
-                    hx-get="{{ url_for('ping') }}"
-                    hx-swap="outerHTML"
-                    class="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500">
-                    Ping the server
-                </button>
+                {# main course card #}
+                <div class="animate-float relative rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-indigo-900/10">
+                    <div class="flex items-start justify-between">
+                        <div class="rounded-xl bg-indigo-50 p-2.5 text-indigo-600">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"/></svg>
+                        </div>
+                        <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">Live · Batch 08</span>
+                    </div>
+
+                    <h3 class="mt-5 font-display text-xl font-bold text-slate-900">Full-Stack Web Development</h3>
+                    <p class="mt-1.5 text-sm text-slate-500">PHP, Laravel & JavaScript — build real apps from scratch.</p>
+
+                    <div class="mt-5 flex items-center gap-2 text-xs font-semibold text-slate-500">
+                        <span class="rounded-lg bg-slate-100 px-2.5 py-1">12 weeks</span>
+                        <span class="rounded-lg bg-slate-100 px-2.5 py-1">Beginner → Pro</span>
+                        <span class="rounded-lg bg-slate-100 px-2.5 py-1">60+ lessons</span>
+                    </div>
+
+                    <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                        <div class="flex items-center gap-1 text-sm">
+                            <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                            <span class="font-bold text-slate-900">4.9</span>
+                            <span class="text-slate-400">(128)</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                            <span class="relative flex h-2 w-2">
+                                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                            </span>
+                            <span
+                                class="cursor-pointer"
+                                hx-get="{{ url_for('ping') }}"
+                                hx-swap="none"
+                                hx-trigger="load, every 15s"
+                            >Live session</span>
+                        </div>
+                    </div>
+                </div>
+
+                {# floating: mentor card #}
+                <div class="animate-float-delay absolute -left-4 top-16 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-xl shadow-indigo-900/10 sm:-left-10">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white">M</div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">Mentor Support</p>
+                        <p class="text-xs text-slate-500">24/7 guidance</p>
+                    </div>
+                </div>
+
+                {# floating: progress card #}
+                <div class="animate-float absolute -right-3 bottom-14 w-44 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl shadow-indigo-900/10 sm:-right-8" style="animation-delay: 2.2s;">
+                    <p class="text-xs font-semibold text-slate-500">Attendance</p>
+                    <p class="font-display text-2xl font-bold text-emerald-600">94%</p>
+                    <div class="mt-2 h-1.5 rounded-full bg-slate-100">
+                        <div class="bar-grow h-1.5 w-[94%] rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"></div>
+                    </div>
+                </div>
+
+                {# floating: certificate chip #}
+                <div class="absolute -bottom-5 left-8 flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-lg shadow-indigo-900/10">
+                    <svg class="h-4 w-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <p class="text-xs font-bold text-slate-900">Certificate included</p>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+</section>
 
-    <footer class="py-8 text-center text-sm text-slate-400">
-        &copy; {{ 'now'|date('Y') }} ViretaDev. All rights reserved.
-    </footer>
+{# ====================================================================== #
+   SKILLS MARQUEE (light)
+# ====================================================================== #}
+<div class="border-y border-slate-200 bg-white py-5">
+    <div class="marquee relative overflow-hidden">
+        <div class="marquee-track flex w-max items-center gap-10">
+            {% for skill in ['PHP','Laravel','JavaScript','React','Python','MySQL','Git & GitHub','UI / UX','HTML & CSS','REST APIs'] %}
+                <span class="flex items-center gap-2.5 text-sm font-bold uppercase tracking-wider text-slate-400">
+                    <svg class="h-4 w-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    {{ skill }}
+                </span>
+            {% endfor %}
+            {% for skill in ['PHP','Laravel','JavaScript','React','Python','MySQL','Git & GitHub','UI / UX','HTML & CSS','REST APIs'] %}
+                <span class="flex items-center gap-2.5 text-sm font-bold uppercase tracking-wider text-slate-400">
+                    <svg class="h-4 w-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    {{ skill }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+
+{# ====================================================================== #
+   STATS BAND
+# ====================================================================== #}
+<section class="relative z-10 -mt-0 pt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="reveal grid grid-cols-2 gap-6 rounded-3xl border border-slate-200 bg-white px-6 py-10 shadow-xl shadow-slate-900/5 lg:grid-cols-4">
+            <div class="text-center">
+                <p class="font-display text-4xl font-bold text-indigo-600" data-count="150" data-suffix="+">0</p>
+                <p class="mt-1.5 text-sm font-medium text-slate-500">Learners trained</p>
+            </div>
+            <div class="text-center">
+                <p class="font-display text-4xl font-bold text-violet-600" data-count="24" data-suffix="+">0</p>
+                <p class="mt-1.5 text-sm font-medium text-slate-500">Active courses</p>
+            </div>
+            <div class="text-center">
+                <p class="font-display text-4xl font-bold text-emerald-600" data-count="94" data-suffix="%">0</p>
+                <p class="mt-1.5 text-sm font-medium text-slate-500">Attendance rate</p>
+            </div>
+            <div class="text-center">
+                <p class="font-display text-4xl font-bold text-amber-600"><span data-count="24">0</span>/7</p>
+                <p class="mt-1.5 text-sm font-medium text-slate-500">Mentor support</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====================================================================== #
+   COURSES
+# ====================================================================== #}
+<section id="courses" class="py-20 sm:py-28">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <span class="reveal inline-block rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1.5 text-sm font-bold text-indigo-700">Our courses</span>
+            <h2 class="reveal reveal-delay-1 mt-4 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                Popular <span class="text-gradient">training programs</span>
+            </h2>
+            <p class="reveal reveal-delay-2 mt-4 text-lg text-slate-600">
+                Project-based curriculums designed by industry mentors — learn by building, not just watching.
+            </p>
+        </div>
+
+        <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {# Card 1 #}
+            <div class="course-card reveal group rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex items-start justify-between">
+                    <div class="rounded-xl bg-indigo-50 p-2.5 text-indigo-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+                    </div>
+                    <span class="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-600">Best seller</span>
+                </div>
+                <h3 class="mt-5 font-display text-lg font-bold text-slate-900">Full-Stack Web Dev</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">PHP, Laravel, JavaScript & MySQL — from zero to deployable apps.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">12 weeks</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">Beginner</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">60+ lessons</span>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                    <div class="flex items-center gap-1 text-sm">
+                        <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                        <span class="font-bold text-slate-900">4.9</span>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="text-sm font-bold text-indigo-600 transition group-hover:translate-x-0.5">Enroll →</a>
+                </div>
+            </div>
+
+            {# Card 2 #}
+            <div class="course-card reveal reveal-delay-1 group rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex items-start justify-between">
+                    <div class="rounded-xl bg-violet-50 p-2.5 text-violet-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>
+                    </div>
+                    <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">New batch</span>
+                </div>
+                <h3 class="mt-5 font-display text-lg font-bold text-slate-900">UI/UX Design</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">Design thinking, Figma, wireframes and clickable prototypes that impress.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">8 weeks</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">Beginner</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">40+ lessons</span>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                    <div class="flex items-center gap-1 text-sm">
+                        <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                        <span class="font-bold text-slate-900">4.8</span>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="text-sm font-bold text-indigo-600 transition group-hover:translate-x-0.5">Enroll →</a>
+                </div>
+            </div>
+
+            {# Card 3 #}
+            <div class="course-card reveal reveal-delay-2 group rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex items-start justify-between">
+                    <div class="rounded-xl bg-emerald-50 p-2.5 text-emerald-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>
+                    </div>
+                    <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-600">Popular</span>
+                </div>
+                <h3 class="mt-5 font-display text-lg font-bold text-slate-900">Backend with PHP & Laravel</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">REST APIs, databases, authentication and clean architecture practices.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">10 weeks</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">Intermediate</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">45+ lessons</span>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                    <div class="flex items-center gap-1 text-sm">
+                        <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                        <span class="font-bold text-slate-900">4.9</span>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="text-sm font-bold text-indigo-600 transition group-hover:translate-x-0.5">Enroll →</a>
+                </div>
+            </div>
+
+            {# Card 4 #}
+            <div class="course-card reveal group rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex items-start justify-between">
+                    <div class="rounded-xl bg-sky-50 p-2.5 text-sky-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/></svg>
+                    </div>
+                    <span class="rounded-full bg-rose-50 px-3 py-1 text-xs font-bold text-rose-600">Beginner</span>
+                </div>
+                <h3 class="mt-5 font-display text-lg font-bold text-slate-900">Frontend Fundamentals</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">HTML, CSS, JavaScript & React — craft responsive, modern interfaces.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">10 weeks</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">Beginner</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">55+ lessons</span>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                    <div class="flex items-center gap-1 text-sm">
+                        <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                        <span class="font-bold text-slate-900">4.7</span>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="text-sm font-bold text-indigo-600 transition group-hover:translate-x-0.5">Enroll →</a>
+                </div>
+            </div>
+
+            {# Card 5 #}
+            <div class="course-card reveal reveal-delay-1 group rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex items-start justify-between">
+                    <div class="rounded-xl bg-rose-50 p-2.5 text-rose-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-600">Career</span>
+                </div>
+                <h3 class="mt-5 font-display text-lg font-bold text-slate-900">Career Essentials</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">Resume, portfolio, mock interviews and job-search strategies that work.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">4 weeks</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">All levels</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">20+ sessions</span>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                    <div class="flex items-center gap-1 text-sm">
+                        <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                        <span class="font-bold text-slate-900">4.8</span>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="text-sm font-bold text-indigo-600 transition group-hover:translate-x-0.5">Enroll →</a>
+                </div>
+            </div>
+
+            {# Card 6 #}
+            <div class="course-card reveal reveal-delay-2 group rounded-2xl border border-slate-200 bg-white p-6">
+                <div class="flex items-start justify-between">
+                    <div class="rounded-xl bg-amber-50 p-2.5 text-amber-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0"/></svg>
+                    </div>
+                    <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-600">Elective</span>
+                </div>
+                <h3 class="mt-5 font-display text-lg font-bold text-slate-900">Data & SQL Basics</h3>
+                <p class="mt-2 text-sm leading-relaxed text-slate-500">Databases, queries, normalization and data-driven decision making.</p>
+                <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">6 weeks</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">Beginner</span>
+                    <span class="rounded-md bg-slate-100 px-2.5 py-1">30+ lessons</span>
+                </div>
+                <div class="mt-5 flex items-center justify-between border-t border-dashed border-slate-200 pt-4">
+                    <div class="flex items-center gap-1 text-sm">
+                        <svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                        <span class="font-bold text-slate-900">4.6</span>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="text-sm font-bold text-indigo-600 transition group-hover:translate-x-0.5">Enroll →</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="reveal mt-10 text-center text-sm text-slate-500">
+            Looking for something else? <a href="#cta" class="font-bold text-indigo-600 hover:underline">Talk to our counselors →</a>
+        </p>
+    </div>
+</section>
+
+{# ====================================================================== #
+   WHY CHOOSE US
+# ====================================================================== #}
+<section id="why" class="bg-white py-20 sm:py-28">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-14 lg:grid-cols-2">
+            {# left: copy + feature list #}
+            <div>
+                <span class="reveal inline-block rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-sm font-bold text-amber-700">Why ViretaDev</span>
+                <h2 class="reveal reveal-delay-1 mt-4 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                    A training center built for <span class="text-gradient">real growth</span>
+                </h2>
+                <p class="reveal reveal-delay-2 mt-5 text-lg leading-relaxed text-slate-600">
+                    We don't just teach — we coach you through projects, mentor your progress and hold you
+                    accountable until you're job-ready.
+                </p>
+
+                <div class="mt-9 space-y-6">
+                    <div class="reveal flex gap-4">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Industry mentors</h3>
+                            <p class="mt-1 text-sm leading-relaxed text-slate-600">Learn from senior engineers and designers who work on real products daily.</p>
+                        </div>
+                    </div>
+                    <div class="reveal reveal-delay-1 flex gap-4">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3v5.25m0 0L6 5.25m3.75 3L13.5 5.25M9.75 21a9 9 0 100-18 9 9 0 000 18zm7.5-7.5L12 18.75 9.75 16.5l3.75-3.75 3.75 3.75z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Project-based learning</h3>
+                            <p class="mt-1 text-sm leading-relaxed text-slate-600">Every module ends with a real task you submit, review and improve — tracked in your portal.</p>
+                        </div>
+                    </div>
+                    <div class="reveal reveal-delay-2 flex gap-4">
+                        <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Attendance & accountability</h3>
+                            <p class="mt-1 text-sm leading-relaxed text-slate-600">Auto check-ins and weekly progress reports keep you consistent till graduation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# right: panel #}
+            <div class="reveal reveal-delay-1 relative">
+                <div class="bg-dots absolute inset-0 opacity-70" aria-hidden="true"></div>
+                <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 sm:p-10">
+                    <div class="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-indigo-500/30 blur-3xl" aria-hidden="true"></div>
+                    <div class="pointer-events-none absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-amber-400/20 blur-3xl" aria-hidden="true"></div>
+
+                    <div class="relative">
+                        <div class="flex items-center gap-1">
+                            {% for i in 1..5 %}
+                                <svg class="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>
+                            {% endfor %}
+                        </div>
+                        <blockquote class="mt-5 font-display text-2xl font-semibold leading-snug text-white sm:text-[1.7rem]">
+                            "I joined with zero coding experience. Six months later I shipped three projects and landed my first internship."
+                        </blockquote>
+                        <div class="mt-7 flex items-center gap-3">
+                            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 text-sm font-bold text-white">SN</div>
+                            <div>
+                                <p class="text-sm font-bold text-white">Sadia Nahar</p>
+                                <p class="text-xs text-slate-400">Full-Stack Developer · Batch 04</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-9 grid grid-cols-2 gap-4 border-t border-white/10 pt-7">
+                            <div>
+                                <p class="font-display text-3xl font-bold text-white" data-count="92" data-suffix="%">0</p>
+                                <p class="mt-1 text-xs text-slate-400">Job & internship placement</p>
+                            </div>
+                            <div>
+                                <p class="font-display text-3xl font-bold text-white"><span data-count="40" data-suffix="+">0</span></p>
+                                <p class="mt-1 text-xs text-slate-400">Industry partners</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====================================================================== #
+   ADMISSION STEPS
+# ====================================================================== #}
+<section id="steps" class="py-20 sm:py-28">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <span class="reveal inline-block rounded-full border border-indigo-200 bg-indigo-50 px-4 py-1.5 text-sm font-bold text-indigo-700">Simple by design</span>
+            <h2 class="reveal reveal-delay-1 mt-4 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                Admission in <span class="text-gradient">3 easy steps</span>
+            </h2>
+            <p class="reveal reveal-delay-2 mt-4 text-lg text-slate-600">
+                From registration to your first live class — it takes less than 10 minutes.
+            </p>
+        </div>
+
+        <div class="relative mt-14 grid grid-cols-1 gap-10 md:grid-cols-3">
+            <div class="hidden md:absolute md:top-12 md:left-[16%] md:right-[16%] md:h-px md:bg-gradient-to-r md:from-transparent md:via-indigo-300 md:to-transparent" aria-hidden="true"></div>
+
+            <div class="reveal text-center">
+                <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-indigo-600 font-display text-3xl font-bold text-white shadow-xl shadow-indigo-500/30">
+                    1
+                    <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-slate-900">✓</span>
+                </div>
+                <h3 class="mt-6 text-lg font-bold text-slate-900">Create your account</h3>
+                <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-slate-600">Register online with your details and join your assigned batch instantly.</p>
+            </div>
+
+            <div class="reveal reveal-delay-1 text-center">
+                <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-violet-600 font-display text-3xl font-bold text-white shadow-xl shadow-violet-500/30">
+                    2
+                    <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-slate-900">✓</span>
+                </div>
+                <h3 class="mt-6 text-lg font-bold text-slate-900">Learn & engage</h3>
+                <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-slate-600">Join live sessions, mark attendance, submit assignments and get feedback.</p>
+            </div>
+
+            <div class="reveal reveal-delay-2 text-center">
+                <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-emerald-600 font-display text-3xl font-bold text-white shadow-xl shadow-emerald-500/30">
+                    3
+                    <span class="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-slate-900">✓</span>
+                </div>
+                <h3 class="mt-6 text-lg font-bold text-slate-900">Graduate with proof</h3>
+                <p class="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-slate-600">Earn your certificate, build your portfolio and step into the industry.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====================================================================== #
+   TESTIMONIALS
+# ====================================================================== #}
+<section id="success" class="bg-white py-20 sm:py-28">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <span class="reveal inline-block rounded-full border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-sm font-bold text-emerald-700">Success stories</span>
+            <h2 class="reveal reveal-delay-1 mt-4 font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                Learners who <span class="text-gradient">made it</span>
+            </h2>
+        </div>
+
+        <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="reveal rounded-2xl border border-slate-200 bg-[#faf9f6] p-7">
+                <div class="flex items-center gap-1">
+                    {% for i in 1..5 %}<svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>{% endfor %}
+                </div>
+                <p class="mt-4 text-sm leading-relaxed text-slate-600">
+                    "The mentor reviews on my assignments were gold. Every week I could see my code getting cleaner."
+                </p>
+                <div class="mt-6 flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 text-xs font-bold text-white">RA</div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">Rakib Ahmed</p>
+                        <p class="text-xs text-slate-500">PHP Developer · Batch 03</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal reveal-delay-1 rounded-2xl border border-slate-200 bg-[#faf9f6] p-7">
+                <div class="flex items-center gap-1">
+                    {% for i in 1..5 %}<svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>{% endfor %}
+                </div>
+                <p class="mt-4 text-sm leading-relaxed text-slate-600">
+                    "Attendance tracking kept me consistent. I never missed a class and it shows in my results."
+                </p>
+                <div class="mt-6 flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-xs font-bold text-white">FM</div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">Fatema Mitu</p>
+                        <p class="text-xs text-slate-500">UI/UX Designer · Batch 05</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal reveal-delay-2 rounded-2xl border border-slate-200 bg-[#faf9f6] p-7">
+                <div class="flex items-center gap-1">
+                    {% for i in 1..5 %}<svg class="h-4 w-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401z"/></svg>{% endfor %}
+                </div>
+                <p class="mt-4 text-sm leading-relaxed text-slate-600">
+                    "Career essentials changed everything — my resume, my portfolio, my interviews. Highly recommended."
+                </p>
+                <div class="mt-6 flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-xs font-bold text-white">TM</div>
+                    <div>
+                        <p class="text-sm font-bold text-slate-900">Tanvir Mahmud</p>
+                        <p class="text-xs text-slate-500">Frontend Developer · Batch 06</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ====================================================================== #
+   CTA BAND
+# ====================================================================== #}
+<section id="cta" class="relative overflow-hidden bg-slate-900 py-20 sm:py-24">
+    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-indigo-500/25 blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-amber-400/15 blur-3xl"></div>
+        <div class="bg-grid absolute inset-0" style="background-image: linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);"></div>
+    </div>
+
+    <div class="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+        <span class="reveal inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-bold text-amber-300 backdrop-blur">
+            <span class="relative flex h-2 w-2">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-300 opacity-75"></span>
+                <span class="relative inline-flex h-2 w-2 rounded-full bg-amber-400"></span>
+            </span>
+            Limited seats for Batch 2026
+        </span>
+        <h2 class="reveal reveal-delay-1 mt-5 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            Ready to start your tech journey?
+        </h2>
+        <p class="reveal reveal-delay-2 mx-auto mt-4 max-w-xl text-lg text-slate-300">
+            Join ViretaDev training center and get hands-on experience on real projects with mentor guidance — free to start.
+        </p>
+        <div class="reveal reveal-delay-3 mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a href="{{ url_for('register') }}" class="btn-shine w-full rounded-xl bg-amber-400 px-8 py-3.5 text-base font-bold text-slate-900 shadow-xl shadow-amber-500/25 transition hover:bg-amber-300 sm:w-auto">
+                Apply for Admission
+            </a>
+            <a href="{{ url_for('login') }}" class="w-full rounded-xl border border-white/25 bg-white/5 px-8 py-3.5 text-base font-semibold text-white backdrop-blur-md transition hover:bg-white/10 sm:w-auto">
+                Sign in to Portal
+            </a>
+        </div>
+    </div>
+</section>
+
+{# ====================================================================== #
+   FOOTER
+# ====================================================================== #}
+<footer class="border-t border-slate-200 bg-white py-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-4">
+            <div class="md:col-span-2">
+                <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+                    <img src="{{ upload('logo/logo2.png') }}" alt="{{ app_name }}" class="h-9 w-auto">
+                    <span class="font-display text-lg font-bold text-slate-900">Vireta<span class="text-gradient">Dev</span></span>
+                </a>
+                <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-500">
+                    A modern training center empowering the next generation of developers and designers
+                    through real-world, mentor-guided programs.
+                </p>
+                <div class="mt-5 flex items-center gap-3">
+                    <a href="#" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 21v-7h2.5l.5-3h-3V9.05c0-.87.3-1.55 1.7-1.55H16.6V4.86c-.31-.04-1.3-.13-2.4-.13-2.4 0-4.2 1.5-4.2 4.5V11H7.5v3h2.5v7h3.5z"/></svg>
+                    </a>
+                    <a href="#" aria-label="YouTube" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M21.6 7.2a2.5 2.5 0 00-1.76-1.77C18.25 5 12 5 12 5s-6.25 0-7.84.43A2.5 2.5 0 002.4 7.2 26 26 0 002 12a26 26 0 00.4 4.8 2.5 2.5 0 001.76 1.77C5.75 19 12 19 12 19s6.25 0 7.84-.43a2.5 2.5 0 001.76-1.77A26 26 0 0022 12a26 26 0 00-.4-4.8zM10 15V9l5.2 3L10 15z"/></svg>
+                    </a>
+                    <a href="#" aria-label="LinkedIn" class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-600">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6.94 8.5v11H3.56v-11h3.38zM7.16 5.25a1.96 1.96 0 11-3.92 0 1.96 1.96 0 013.92 0zM20.5 13.06v6.44h-3.38v-6.16c0-1.58-.57-2.66-2-2.66-1.1 0-1.75.74-2.04 1.45-.1.26-.13.62-.13.98v6.39H9.57s.05-10.36 0-11.44h3.38v1.62c.45-.7 1.26-1.69 3.05-1.69 2.23 0 3.9 1.46 3.9 4.6z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold uppercase tracking-wider text-slate-700">Platform</h4>
+                <ul class="mt-4 space-y-2.5 text-sm">
+                    <li><a href="#courses" class="text-slate-500 transition hover:text-indigo-600">Courses</a></li>
+                    <li><a href="#why" class="text-slate-500 transition hover:text-indigo-600">Why us</a></li>
+                    <li><a href="#steps" class="text-slate-500 transition hover:text-indigo-600">Admission</a></li>
+                    <li><a href="{{ url_for('login') }}" class="text-slate-500 transition hover:text-indigo-600">Student portal</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-sm font-bold uppercase tracking-wider text-slate-700">Contact</h4>
+                <ul class="mt-4 space-y-2.5 text-sm text-slate-500">
+                    <li class="flex items-start gap-2">
+                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6c0 4.4 5.4 9.4 5.7 9.7a1 1 0 001.4 0C11.6 17.4 17 12.4 17 8a6 6 0 00-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z"/></svg>
+                        Dhaka, Bangladesh
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z"/></svg>
+                        +880 1700-000000
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <svg class="h-4 w-4 shrink-0 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"/><path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"/></svg>
+                        hello@viretadev.com
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-10 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row">
+            <p class="text-sm text-slate-500">
+                &copy; {{ 'now'|date('Y') }} {{ app_name }}. All rights reserved.
+            </p>
+            <p class="flex items-center gap-1.5 text-sm text-slate-500">
+                Made with
+                <svg class="h-4 w-4 text-rose-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+                for learners
+            </p>
+        </div>
+    </div>
+</footer>
 {% endblock %}

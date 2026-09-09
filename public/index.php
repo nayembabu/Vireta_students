@@ -23,6 +23,9 @@ if (($_ENV['APP_ENV'] ?? 'development') === 'production') {
 
 $container = $containerBuilder->build();
 
+// Boot Eloquent (Illuminate Database) so static model queries work
+$container->get('db');
+
 // Create app
 $app = Bridge::create($container);
 

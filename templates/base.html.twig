@@ -2,22 +2,48 @@
    ViretaDev Student Portal - Base Layout
    ========================================================================== #}
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-100">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ app_name }}{% endblock %}</title>
 
+    <link rel="icon" type="image/png" href="{{ upload('logo/logo2.png') }}">
+    <meta name="description" content="{{ app_name }} — Manage courses, attendance, assignments and progress in one place.">
+
+    {# Google Fonts: Fraunces (display serif) + Manrope (body) #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     {# Tailwind CSS (Play CDN - swap for a build in production) #}
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        display: ['Fraunces', 'Georgia', 'serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    {# App styles #}
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body class="font-sans antialiased text-slate-800 bg-[#faf9f6]">
+    {% block body %}{% endblock %}
 
     {# HTMX - server-driven interactivity #}
     <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
 
-    {% block head %}{% endblock %}
-</head>
-<body class="h-full font-sans antialiased text-slate-800">
-    {% block body %}{% endblock %}
+    {# App scripts #}
+    <script src="{{ asset('js/app.js') }}"></script>
 
     {% block scripts %}{% endblock %}
 </body>

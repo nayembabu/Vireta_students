@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "875de35d8b99974c1bac2ae80682ccf0",
+    "content-hash": "1026a7dc005e8384b30988fa45ff3616",
     "packages": [
         {
             "name": "brick/math",
@@ -1734,32 +1734,31 @@
         },
         {
             "name": "odan/session",
-            "version": "5.1.0",
+            "version": "6.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/odan/session.git",
-                "reference": "df95aeee04dec466172d4c4e0e3ac9245e8182b0"
+                "reference": "4beb2b897d2fbb71619c6c760cc022ab61ac07f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/odan/session/zipball/df95aeee04dec466172d4c4e0e3ac9245e8182b0",
-                "reference": "df95aeee04dec466172d4c4e0e3ac9245e8182b0",
+                "url": "https://api.github.com/repos/odan/session/zipball/4beb2b897d2fbb71619c6c760cc022ab61ac07f4",
+                "reference": "4beb2b897d2fbb71619c6c760cc022ab61ac07f4",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.3 || ^8.0",
-                "psr/http-message": "^1.0",
-                "psr/http-server-handler": "^1.0",
-                "psr/http-server-middleware": "^1.0"
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "psr/http-message": "^1 || ^2",
+                "psr/http-server-handler": "^1",
+                "psr/http-server-middleware": "^1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.16",
-                "middlewares/utils": "^3.1",
-                "overtrue/phplint": "^1.1 || ^2.0",
-                "phpstan/phpstan": "0.*",
-                "phpunit/phpunit": "^7 || ^8 || ^9",
-                "slim/psr7": "^1.1",
-                "squizlabs/php_codesniffer": "^3.4"
+                "friendsofphp/php-cs-fixer": "^3",
+                "middlewares/utils": "^3 || ^4",
+                "nyholm/psr7": "^1.5",
+                "phpstan/phpstan": "^2",
+                "phpunit/phpunit": "^11",
+                "squizlabs/php_codesniffer": "^3"
             },
             "type": "library",
             "autoload": {
@@ -1779,9 +1778,9 @@
             ],
             "support": {
                 "issues": "https://github.com/odan/session/issues",
-                "source": "https://github.com/odan/session/tree/5.1.0"
+                "source": "https://github.com/odan/session/tree/6.5.1"
             },
-            "time": "2020-12-23T18:09:07+00:00"
+            "time": "2026-02-05T20:06:59+00:00"
         },
         {
             "name": "php-di/invoker",

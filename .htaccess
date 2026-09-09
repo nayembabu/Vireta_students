@@ -14,9 +14,12 @@ Options -Indexes
 # ---- URL rewriting --------------------------------------------------
 RewriteEngine On
 
-# If the URL structure is /public/... (or / and /...) serve any real
-# file/directory inside public/ directly (assets, etc.)
+# If the URL structure is /public/... serve any real file/dir directly
 RewriteRule ^public(/|$) - [L]
+
+# Clean URLs for the webroot sub-folders
+RewriteRule ^assets/(.*)$ public/assets/$1 [QSA,L]
+RewriteRule ^uploads/(.*)$ public/uploads/$1 [QSA,L]
 
 # Everything else goes through the Slim front controller
 RewriteRule ^(.*)$ public/index.php [QSA,L]

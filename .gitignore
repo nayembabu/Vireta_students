@@ -6,3 +6,10 @@
 *.log
 .env.local
 .DS_Store
+/public/uploads/*
+!/public/uploads/**/.gitkeep
+
+# Local dev artifacts
+/.freebuff/
+/_ck.txt
+/tmp_home.txt
