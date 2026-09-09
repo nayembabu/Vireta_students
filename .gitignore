@@ -1,0 +1,8 @@
+/.env
+/vendor/
+/cache/
+/logs/
+/tmp/
+*.log
+.env.local
+.DS_Store

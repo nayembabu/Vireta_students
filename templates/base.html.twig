@@ -1,0 +1,24 @@
+{# ==========================================================================
+   ViretaDev Student Portal - Base Layout
+   ========================================================================== #}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ app_name }}{% endblock %}</title>
+
+    {# Tailwind CSS (Play CDN - swap for a build in production) #}
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {# HTMX - server-driven interactivity #}
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+
+    {% block head %}{% endblock %}
+</head>
+<body class="h-full font-sans antialiased text-slate-800">
+    {% block body %}{% endblock %}
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

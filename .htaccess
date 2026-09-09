@@ -1,0 +1,22 @@
+# =====================================================================
+# ViretaDev Student Portal - Apache config (project root)
+# Forces every request through the Slim front controller and protects
+# sensitive files.
+# =====================================================================
+
+Options -Indexes
+
+# ---- Protect sensitive files ---------------------------------------
+<FilesMatch "^\.(env|git|env\.example)$|^composer\.(json|lock)$|^phinx\.php$">
+    Require all denied
+</FilesMatch>
+
+# ---- URL rewriting --------------------------------------------------
+RewriteEngine On
+
+# If the URL structure is /public/... (or / and /...) serve any real
+# file/directory inside public/ directly (assets, etc.)
+RewriteRule ^public(/|$) - [L]
+
+# Everything else goes through the Slim front controller
+RewriteRule ^(.*)$ public/index.php [QSA,L]
