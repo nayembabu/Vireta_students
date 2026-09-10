@@ -1,6 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% block admin_title %}{% endblock %} - Admin · {{ app_name }}{% endblock %}
+{% set role = auth_user.role_slug %}
+{% set is_admin = role == 'admin' %}
+{% set is_trainer = role == 'trainer' %}
+{% set is_cashier = role == 'cashier' %}
+{% set staff = is_trainer ? '/trainer' : (is_cashier ? '/cashier' : '/admin') %}
+{% set home = base_path ~ staff %}
+{% set panel_name = is_trainer ? 'Trainer' : (is_cashier ? 'Cashier' : 'Admin') %}
+
+{% block title %}{% block admin_title %}{% endblock %} - {{ panel_name }} · {{ app_name }}{% endblock %}
 
 {% block body %}
 <div class="flex min-h-screen">
@@ -8,16 +16,18 @@
     {# ================= Sidebar (desktop) ================= #}
     <aside class="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-slate-200/80 bg-white/90 backdrop-blur-md lg:flex">
         <div class="flex h-16 items-center gap-2.5 border-b border-slate-200/70 px-5">
-            <a href="{{ base_path }}/admin" class="flex items-center gap-2.5">
+            <a href="{{ home }}" class="flex items-center gap-2.5">
                 <img src="{{ upload('logo/logo2.png') }}" alt="{{ app_name }}" class="h-9 w-9 rounded-xl ring-2 ring-teal-400/40">
                 <span class="text-sm font-extrabold tracking-tight text-slate-900">Vireta<span class="text-teal-600">Dev</span></span>
             </a>
         </div>
 
         <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4 text-sm font-medium">
-            <a href="{{ base_path }}/admin" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+            <a href="{{ home }}" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">📊</span> Dashboard
             </a>
+
+            {% if is_admin %}
             <a href="{{ base_path }}/admin/courses" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">📚</span> Courses
             </a>
@@ -27,18 +37,31 @@
             <a href="{{ base_path }}/admin/students" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">👥</span> Students
             </a>
-            <a href="{{ base_path }}/admin/routines" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+            <a href="{{ base_path }}/admin/trainers" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+                <span class="nav-icon">🧑‍🏫</span> Trainers
+            </a>
+            <a href="{{ base_path }}/admin/cashiers" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+                <span class="nav-icon">💵</span> Cashiers
+            </a>
+            {% endif %}
+
+            {% if is_admin or is_trainer %}
+            <a href="{{ base_path }}{{ staff }}/routines" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">📅</span> Routine
             </a>
-            <a href="{{ base_path }}/admin/attendance" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+            <a href="{{ base_path }}{{ staff }}/attendance" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">✅</span> Attendance
             </a>
-            <a href="{{ base_path }}/admin/assignments" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+            <a href="{{ base_path }}{{ staff }}/assignments" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">📝</span> Assignments
             </a>
-            <a href="{{ base_path }}/admin/payments" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
+            {% endif %}
+
+            {% if is_admin or is_cashier %}
+            <a href="{{ base_path }}{{ staff }}/payments" class="nav-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-teal-50 hover:text-teal-700">
                 <span class="nav-icon">💳</span> Payments
             </a>
+            {% endif %}
         </nav>
 
         <div class="border-t border-slate-200/70 p-3">
@@ -65,7 +88,7 @@
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
                     </button>
                     <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-teal-600">Admin panel</p>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-teal-600">{{ panel_name }} panel</p>
                         <h1 class="text-base font-extrabold text-slate-900">{% block admin_heading %}{% endblock %}</h1>
                     </div>
                 </div>
@@ -82,14 +105,26 @@
 
         {# Mobile menu #}
         <div id="nav-menu" class="hidden flex-col border-b border-slate-200 bg-white px-4 pb-4 pt-2 lg:hidden">
-            <a href="{{ base_path }}/admin" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📊 Dashboard</a>
+            <a href="{{ home }}" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📊 Dashboard</a>
+
+            {% if is_admin %}
             <a href="{{ base_path }}/admin/courses" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📚 Courses</a>
             <a href="{{ base_path }}/admin/batches" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">🗂️ Batches</a>
             <a href="{{ base_path }}/admin/students" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">👥 Students</a>
-            <a href="{{ base_path }}/admin/routines" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📅 Routine</a>
-            <a href="{{ base_path }}/admin/attendance" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">✅ Attendance</a>
-            <a href="{{ base_path }}/admin/assignments" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📝 Assignments</a>
-            <a href="{{ base_path }}/admin/payments" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">💳 Payments</a>
+            <a href="{{ base_path }}/admin/trainers" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">🧑‍🏫 Trainers</a>
+            <a href="{{ base_path }}/admin/cashiers" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">💵 Cashiers</a>
+            {% endif %}
+
+            {% if is_admin or is_trainer %}
+            <a href="{{ base_path }}{{ staff }}/routines" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📅 Routine</a>
+            <a href="{{ base_path }}{{ staff }}/attendance" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">✅ Attendance</a>
+            <a href="{{ base_path }}{{ staff }}/assignments" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">📝 Assignments</a>
+            {% endif %}
+
+            {% if is_admin or is_cashier %}
+            <a href="{{ base_path }}{{ staff }}/payments" class="nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-teal-50 hover:text-teal-700">💳 Payments</a>
+            {% endif %}
+
             <div class="mt-2 border-t border-slate-100 pt-2">
                 <a href="{{ base_path }}/" class="block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50">🏠 Student portal</a>
                 <form method="post" action="{{ base_path }}/logout">
@@ -106,7 +141,7 @@
         </main>
 
         <footer class="border-t border-slate-200/80 px-4 py-4 text-center text-xs text-slate-400">
-            © {{ "now"|date("Y") }} {{ app_name }} · Admin Panel
+            © {{ "now"|date("Y") }} {{ app_name }} · {{ panel_name }} Panel
         </footer>
     </div>
 </div>

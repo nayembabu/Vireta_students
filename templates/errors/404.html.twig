@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}404 - Page not found · {{ app_name }}{% endblock %}
+
+{% block body %}
+<div class="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-900 px-4">
+    <div class="pointer-events-none absolute inset-0 bg-grid opacity-20"></div>
+    <div class="pointer-events-none absolute -top-24 -right-24 h-80 w-80 rounded-full bg-teal-500/25 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-indigo-600/25 blur-3xl"></div>
+    <div class="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal-400/10 blur-2xl"></div>
+
+    <div class="relative w-full max-w-lg text-center text-white">
+        <div class="text-8xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-indigo-400 sm:text-9xl">404</div>
+
+        <div class="mx-auto mt-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-2xl ring-1 ring-white/15">
+            <svg class="h-7 w-7 text-teal-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75h.008v.008H9.75v-.008zm4.5 0h.008v.008h-.008v-.008z"/></svg>
+        </div>
+
+        <h1 class="mt-5 text-2xl font-extrabold sm:text-3xl">Oops! Page not found</h1>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400 sm:text-base">
+            {{ message|default('The page you are looking for does not exist or has been moved.') }}
+        </p>
+
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <a href="{{ base_path }}/"
+               class="inline-flex items-center gap-2 rounded-xl bg-teal-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-400">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+                Back to home
+            </a>
+            <button onclick="history.back()"
+               class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-6 py-2.5 text-sm font-semibold text-slate-200 ring-1 ring-white/15 transition hover:bg-white/15">
+                ← Go back
+            </button>
+        </div>
+
+        <p class="mt-10 text-xs text-slate-500">© {{ "now"|date("Y") }} {{ app_name }}</p>
+    </div>
+</div>
+{% endblock %}

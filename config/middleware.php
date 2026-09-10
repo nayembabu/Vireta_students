@@ -43,9 +43,19 @@ return function (App $app) {
     // Slim error middleware (added last -> outermost -> catches errors from
     // everything below, including routing exceptions like 404)
     $settings = $container->get('settings');
-    $app->addErrorMiddleware(
+    $errorMiddleware = $app->addErrorMiddleware(
         (bool)$settings['environment']['app_debug'],
         true,
         true
+    );
+
+    // Custom 404 page for unmatched routes
+    $errorMiddleware->setErrorHandler(
+        \Slim\Exception\HttpNotFoundException::class,
+        function (\Psr\Http\Message\ServerRequestInterface $request, \Throwable $exception) use ($container) {
+            $twig = $container->get(\Slim\Views\Twig::class);
+            $response = new \Slim\Psr7\Response();
+            return $twig->render($response->withStatus(404), 'errors/404.html.twig');
+        }
     );
 };

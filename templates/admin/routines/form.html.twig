@@ -6,7 +6,7 @@
 {% block admin_content %}
 <div class="mx-auto max-w-xl">
     <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
-        <form method="post" action="{{ routine ? base_path ~ '/admin/routines/' ~ routine.id ~ '/edit' : base_path ~ '/admin/routines/create' }}">
+        <form method="post" action="{{ routine ? base_path ~ staff_base ~ '/routines/' ~ routine.id ~ '/edit' : base_path ~ staff_base ~ '/routines/create' }}">
             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
 
             <div class="space-y-4">
@@ -87,7 +87,7 @@
 
                 <div class="flex gap-3 pt-2">
                     <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">{{ routine ? 'Save changes' : 'Add class' }}</button>
-                    <a href="{{ base_path }}/admin/routines" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                    <a href="{{ base_path }}{{ staff_base }}/routines" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
                 </div>
             </div>
         </form>

@@ -5,7 +5,7 @@
 
 {% block admin_content %}
 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-    <form method="get" action="{{ base_path }}/admin/routines" class="flex items-center gap-2">
+    <form method="get" action="{{ base_path }}{{ staff_base }}/routines" class="flex items-center gap-2">
         <select name="batch" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
             <option value="">All batches</option>
             {% for b in batches %}
@@ -14,7 +14,7 @@
         </select>
         <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
     </form>
-    <a href="{{ base_path }}/admin/routines/create" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Add class</a>
+    <a href="{{ base_path }}{{ staff_base }}/routines/create" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Add class</a>
 </div>
 
 <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
@@ -44,8 +44,8 @@
                     <td class="px-4 py-3 text-xs text-slate-500">{{ r.mentor ?? '—' }}</td>
                     <td class="px-4 py-3">
                         <div class="flex justify-end gap-1.5">
-                            <a href="{{ base_path }}/admin/routines/{{ r.id }}/edit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100" title="Edit">✏️</a>
-                            <form method="post" action="{{ base_path }}/admin/routines/{{ r.id }}/delete" onsubmit="return confirm('Delete this class?');">
+                            <a href="{{ base_path }}{{ staff_base }}/routines/{{ r.id }}/edit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100" title="Edit">✏️</a>
+                            <form method="post" action="{{ base_path }}{{ staff_base }}/routines/{{ r.id }}/delete" onsubmit="return confirm('Delete this class?');">
                                 <input type="hidden" name="_csrf" value="{{ csrf_token }}">
                                 <button type="submit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-400 hover:bg-rose-50 hover:text-rose-500" title="Delete">🗑</button>
                             </form>

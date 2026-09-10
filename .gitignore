@@ -2,14 +2,10 @@
 /vendor/
 /cache/
 /logs/
-/tmp/
 *.log
 .env.local
 .DS_Store
 /public/uploads/*
+!/public/uploads/.htaccess
+!/public/uploads/logo/
 !/public/uploads/**/.gitkeep
-
-# Local dev artifacts
-/.freebuff/
-/_ck.txt
-/tmp_home.txt

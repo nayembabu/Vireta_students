@@ -10,13 +10,16 @@ use App\Models\AssignmentSubmission;
 use App\Models\Course;
 use App\Support\BasePath;
 use App\Support\Flash;
+use App\Support\StaffRedirectTrait;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
-final class AdminAssignmentController
+class AdminAssignmentController
 {
+    use StaffRedirectTrait;
+
     public function __construct(
         private readonly Twig $twig,
         private readonly AuthService $auth,
@@ -85,6 +88,112 @@ final class AdminAssignmentController
             'course_id' => $courseId,
             'ungraded' => $onlyUngraded,
         ]);
+    }
+
+    public function createForm(Request $request, Response $response): Response
+    {
+        return $this->render($response, 'admin/assignments/form.html.twig', [
+            'assignment' => null,
+            'courses' => Course::orderBy('title')->get(),
+            'old' => $this->emptyOld(),
+            'errors' => $this->emptyErrors(),
+        ]);
+    }
+
+    public function create(Request $request, Response $response): Response
+    {
+        $old = $this->normalize($request->getParsedBody());
+        $errors = $this->validate($old);
+
+        if ($errors !== []) {
+            return $this->render($response, 'admin/assignments/form.html.twig', [
+                'assignment' => null,
+                'courses' => Course::orderBy('title')->get(),
+                'old' => $old,
+                'errors' => array_merge($this->emptyErrors(), $errors),
+            ]);
+        }
+
+        Assignment::create([
+            'course_id' => $old['course_id'],
+            'title' => $old['title'],
+            'description' => $old['description'] !== '' ? $old['description'] : null,
+            'due_date' => $old['due_date'] !== '' ? $old['due_date'] : null,
+            'max_score' => $old['max_score'],
+        ]);
+
+        $this->flash->success('Assignment created successfully.');
+
+        return $this->staffRedirect($request, '/assignments');
+    }
+
+    public function editForm(Request $request, Response $response): Response
+    {
+        $assignment = $this->findAssignment($request);
+
+        if ($assignment === null) {
+            return $this->render404($response, 'Assignment not found.');
+        }
+
+        return $this->render($response, 'admin/assignments/form.html.twig', [
+            'assignment' => $assignment,
+            'courses' => Course::orderBy('title')->get(),
+            'old' => [
+                'course_id' => (int)$assignment->course_id,
+                'title' => $assignment->title,
+                'description' => $assignment->description ?? '',
+                'due_date' => $assignment->due_date?->format('Y-m-d\TH:i'),
+                'max_score' => (int)$assignment->max_score,
+            ],
+            'errors' => $this->emptyErrors(),
+        ]);
+    }
+
+    public function edit(Request $request, Response $response): Response
+    {
+        $assignment = $this->findAssignment($request);
+
+        if ($assignment === null) {
+            return $this->render404($response, 'Assignment not found.');
+        }
+
+        $old = $this->normalize($request->getParsedBody());
+        $errors = $this->validate($old);
+
+        if ($errors !== []) {
+            return $this->render($response, 'admin/assignments/form.html.twig', [
+                'assignment' => $assignment,
+                'courses' => Course::orderBy('title')->get(),
+                'old' => $old,
+                'errors' => array_merge($this->emptyErrors(), $errors),
+            ]);
+        }
+
+        $assignment->update([
+            'course_id' => $old['course_id'],
+            'title' => $old['title'],
+            'description' => $old['description'] !== '' ? $old['description'] : null,
+            'due_date' => $old['due_date'] !== '' ? $old['due_date'] : null,
+            'max_score' => $old['max_score'],
+        ]);
+
+        $this->flash->success('Assignment updated successfully.');
+
+        return $this->staffRedirect($request, '/assignments');
+    }
+
+    public function delete(Request $request, Response $response): Response
+    {
+        $assignment = $this->findAssignment($request);
+
+        if ($assignment === null) {
+            return $this->render404($response, 'Assignment not found.');
+        }
+
+        $assignment->delete();
+        $this->flash->success('Assignment deleted.');
+
+        return $this->staffRedirect($request, '/assignments');
     }
 
     public function gradeForm(Request $request, Response $response): Response
@@ -175,7 +284,62 @@ final class AdminAssignmentController
 
         $this->flash->success('Submission graded successfully.');
 
-        return $this->redirect('/admin/assignments');
+        return $this->staffRedirect($request, '/assignments');
+    }
+
+    private function findAssignment(Request $request): ?Assignment
+    {
+        return Assignment::find($this->routeId($request));
+    }
+
+    private function normalize(array $data): array
+    {
+        return [
+            'course_id' => (int)($data['course_id'] ?? 0),
+            'title' => trim((string)($data['title'] ?? '')),
+            'description' => trim((string)($data['description'] ?? '')),
+            'due_date' => trim((string)($data['due_date'] ?? '')),
+            'max_score' => max(1, (int)($data['max_score'] ?? 100)),
+        ];
+    }
+
+    private function validate(array $old): array
+    {
+        $errors = [];
+
+        if ($old['course_id'] <= 0 || !Course::where('id', $old['course_id'])->exists()) {
+            $errors['course_id'] = 'Please select a course.';
+        }
+        if ($old['title'] === '') {
+            $errors['title'] = 'Assignment title is required.';
+        }
+        if ($old['due_date'] !== '' && !strtotime($old['due_date'])) {
+            $errors['due_date'] = 'Please enter a valid due date.';
+        }
+
+        return $errors;
+    }
+
+    private function emptyErrors(): array
+    {
+        return [
+            'course_id' => '',
+            'title' => '',
+            'description' => '',
+            'due_date' => '',
+            'max_score' => '',
+        ];
+    }
+
+    private function emptyOld(): array
+    {
+        return [
+            'course_id' => '',
+            'title' => '',
+            'description' => '',
+            'due_date' => '',
+            'max_score' => 100,
+        ];
     }
 
     private function find(Request $request): ?AssignmentSubmission

@@ -28,6 +28,20 @@ final class DashboardController
             return $this->twig->render($response, 'home.html.twig');
         }
 
+        $role = $user->role?->slug;
+
+        if ($role === 'trainer') {
+            return $this->redirect('/trainer');
+        }
+
+        if ($role === 'cashier') {
+            return $this->redirect('/cashier');
+        }
+
+        if ($role === 'admin') {
+            return $this->redirect('/admin');
+        }
+
         return $this->twig->render($response, 'dashboard/index.html.twig', [
             'data' => $this->dashboard->build($user),
         ]);

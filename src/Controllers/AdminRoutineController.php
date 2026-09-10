@@ -11,14 +11,17 @@ use App\Models\Routine;
 use App\Models\User;
 use App\Support\BasePath;
 use App\Support\Flash;
+use App\Support\StaffRedirectTrait;
 use DateTimeImmutable;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
-final class AdminRoutineController
+class AdminRoutineController
 {
+    use StaffRedirectTrait;
+
     public function __construct(
         private readonly Twig $twig,
         private readonly AuthService $auth,
@@ -103,7 +106,7 @@ final class AdminRoutineController
 
         $this->flash->success('Class added to the routine.');
 
-        return $this->redirect('/admin/routines');
+        return $this->staffRedirect($request, '/routines');
     }
 
     public function editForm(Request $request, Response $response): Response
@@ -170,7 +173,7 @@ final class AdminRoutineController
 
         $this->flash->success('Routine entry updated.');
 
-        return $this->redirect('/admin/routines');
+        return $this->staffRedirect($request, '/routines');
     }
 
     public function delete(Request $request, Response $response): Response
@@ -184,7 +187,7 @@ final class AdminRoutineController
         $routine->delete();
         $this->flash->success('Routine entry deleted.');
 
-        return $this->redirect('/admin/routines');
+        return $this->staffRedirect($request, '/routines');
     }
 
     private function find(Request $request): ?Routine

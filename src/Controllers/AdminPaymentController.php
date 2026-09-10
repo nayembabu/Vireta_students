@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Auth\AuthService;
+use App\Models\Batch;
 use App\Models\Course;
 use App\Models\Payment;
 use App\Models\Role;
@@ -12,14 +13,17 @@ use App\Models\User;
 use App\Models\UserCourse;
 use App\Support\BasePath;
 use App\Support\Flash;
+use App\Support\StaffRedirectTrait;
 use DateTimeImmutable;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
-final class AdminPaymentController
+class AdminPaymentController
 {
+    use StaffRedirectTrait;
+
     public function __construct(
         private readonly Twig $twig,
         private readonly AuthService $auth,
@@ -69,12 +73,7 @@ final class AdminPaymentController
 
     public function createForm(Request $request, Response $response): Response
     {
-        return $this->render($response, 'admin/payments/create.html.twig', [
-            'students' => $this->students(),
-            'courses' => Course::orderBy('title')->get(),
-            'old' => $this->emptyOld(),
-            'errors' => $this->emptyErrors(),
-        ]);
+        return $this->renderCreate($response, $this->emptyOld(), $this->emptyErrors());
     }
 
     public function create(Request $request, Response $response): Response
@@ -83,6 +82,7 @@ final class AdminPaymentController
         $old = [
             'user_id' => (int)($body['user_id'] ?? 0),
             'course_id' => (int)($body['course_id'] ?? 0),
+            'batch_id' => (int)($body['batch_id'] ?? 0),
             'trx_id' => trim((string)($body['trx_id'] ?? '')),
             'sender_number' => trim((string)($body['sender_number'] ?? '')),
             'amount' => trim((string)($body['amount'] ?? '')),
@@ -92,12 +92,7 @@ final class AdminPaymentController
         $errors = $this->validateCreate($old);
 
         if ($errors !== []) {
-            return $this->render($response, 'admin/payments/create.html.twig', [
-                'students' => $this->students(),
-                'courses' => Course::orderBy('title')->get(),
-                'old' => $old,
-                'errors' => array_merge($this->emptyErrors(), $errors),
-            ]);
+            return $this->renderCreate($response, $old, $errors);
         }
 
         Payment::create([
@@ -114,7 +109,7 @@ final class AdminPaymentController
 
         $this->flash->success('Payment recorded and added to the student balance.');
 
-        return $this->redirect('/admin/payments?status=verified');
+        return $this->staffRedirect($request, '/payments?status=verified');
     }
 
     public function verify(Request $request, Response $response): Response
@@ -127,7 +122,7 @@ final class AdminPaymentController
 
         if ($payment->status !== 'pending') {
             $this->flash->info('This payment has already been processed.');
-            return $this->redirect('/admin/payments');
+            return $this->staffRedirect($request, '/payments');
         }
 
         $payment->update([
@@ -138,7 +133,7 @@ final class AdminPaymentController
 
         $this->flash->success('Payment verified and added to the student balance.');
 
-        return $this->redirect('/admin/payments');
+        return $this->staffRedirect($request, '/payments');
     }
 
     public function reject(Request $request, Response $response): Response
@@ -151,7 +146,7 @@ final class AdminPaymentController
 
         if ($payment->status !== 'pending') {
             $this->flash->info('This payment has already been processed.');
-            return $this->redirect('/admin/payments');
+            return $this->staffRedirect($request, '/payments');
         }
 
         $payment->update([
@@ -162,7 +157,7 @@ final class AdminPaymentController
 
         $this->flash->info('Payment rejected.');
 
-        return $this->redirect('/admin/payments');
+        return $this->staffRedirect($request, '/payments');
     }
 
     public function deadline(Request $request, Response $response): Response
@@ -178,7 +173,7 @@ final class AdminPaymentController
 
         if ($deadline === '' || !DateTimeImmutable::createFromFormat('Y-m-d', $deadline)) {
             $this->flash->error('Please enter a valid deadline date.');
-            return $this->redirect('/admin/payments');
+            return $this->staffRedirect($request, '/payments');
         }
 
         UserCourse::where('user_id', $payment->user_id)
@@ -187,15 +182,116 @@ final class AdminPaymentController
 
         $this->flash->success('Payment deadline updated.');
 
-        return $this->redirect('/admin/payments');
+        return $this->staffRedirect($request, '/payments');
     }
 
-    private function students(): array
+    private function renderCreate(Response $response, array $old, array $errors): Response
     {
-        return User::whereHas('role', fn ($q) => $q->where('slug', 'student'))
+        $courseId = (int)($old['course_id'] ?? 0);
+        $batchId = (int)($old['batch_id'] ?? 0);
+
+        return $this->render($response, 'admin/payments/create.html.twig', [
+            'courses' => Course::orderBy('title')->get(),
+            'batches' => $courseId > 0
+                ? Batch::where('course_id', $courseId)->orderBy('name')->get()
+                : collect(),
+            'students' => $batchId > 0
+                ? $this->studentsInBatch($batchId)
+                : collect(),
+            'old' => $old,
+            'errors' => array_merge($this->emptyErrors(), $errors),
+        ]);
+    }
+
+    /** HTMX: options for the batch dropdown of a given course. */
+    public function batches(Request $request, Response $response): Response
+    {
+        $courseId = (int)($request->getQueryParams()['course_id'] ?? 0);
+        $batches = $courseId > 0
+            ? Batch::where('course_id', $courseId)->orderBy('name')->get()
+            : collect();
+
+        $base = BasePath::detect($_SERVER);
+        $html = '<select name="batch_id" '
+            . 'hx-get="' . $base . '/admin/payments/students" '
+            . 'hx-target="#student-select" hx-swap="innerHTML" '
+            . 'class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">';
+        $html .= '<option value="">Select batch</option>';
+        foreach ($batches as $b) {
+            $html .= '<option value="' . $b->id . '">' . htmlspecialchars((string)$b->name, ENT_QUOTES) . '</option>';
+        }
+        $html .= '</select>';
+
+        $response->getBody()->write($html);
+        return $response;
+    }
+
+    /** HTMX: options for the student dropdown of a given batch. */
+    public function students(Request $request, Response $response): Response
+    {
+        $batchId = (int)($request->getQueryParams()['batch_id'] ?? 0);
+        $students = $batchId > 0 ? $this->studentsInBatch($batchId) : collect();
+
+        $base = BasePath::detect($_SERVER);
+        $html = '<select name="user_id" '
+            . 'hx-get="' . $base . '/admin/payments/fee-summary" '
+            . 'hx-target="#fee-summary" hx-swap="innerHTML" hx-include="closest form" '
+            . 'class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">';
+        $html .= '<option value="">Select student</option>';
+        foreach ($students as $s) {
+            $html .= '<option value="' . $s->id . '">' . htmlspecialchars((string)$s->name, ENT_QUOTES) . '</option>';
+        }
+        $html .= '</select>';
+
+        $response->getBody()->write($html);
+        return $response;
+    }
+
+    /** HTMX: fee summary (total / paid / due) for the selected student + course. */
+    public function feeSummary(Request $request, Response $response): Response
+    {
+        $userId = (int)($request->getQueryParams()['user_id'] ?? 0);
+        $courseId = (int)($request->getQueryParams()['course_id'] ?? 0);
+
+        $course = $courseId > 0 ? Course::find($courseId) : null;
+        $user = $userId > 0 ? User::find($userId) : null;
+
+        if ($course === null || $user === null) {
+            $response->getBody()->write('<p class="text-xs text-slate-400">Select a student to see the fee summary.</p>');
+            return $response;
+        }
+
+        $fee = (float)$course->fee;
+        $paid = (float)Payment::where('user_id', $userId)
+            ->where('course_id', $courseId)
+            ->where('status', 'verified')
+            ->sum('amount');
+        $due = max(0, $fee - $paid);
+        $fullPaid = $due <= 0;
+
+        $html = '<div class="grid grid-cols-3 gap-2 rounded-xl bg-slate-50 p-3 text-center">'
+            . '<div><div class="text-[11px] font-bold uppercase text-slate-400">Total fee</div>'
+            . '<div class="font-bold text-slate-800">৳ ' . number_format($fee, 0) . '</div></div>'
+            . '<div><div class="text-[11px] font-bold uppercase text-teal-600">Paid</div>'
+            . '<div class="font-bold text-teal-600">৳ ' . number_format($paid, 0) . '</div></div>'
+            . '<div><div class="text-[11px] font-bold uppercase ' . ($fullPaid ? 'text-teal-600' : 'text-rose-500') . '">Due</div>'
+            . '<div class="font-bold ' . ($fullPaid ? 'text-teal-600' : 'text-rose-600') . '">৳ ' . number_format($due, 0) . '</div></div>'
+            . '</div>';
+
+        if ($fullPaid) {
+            $html .= '<p class="mt-1 text-center text-xs font-semibold text-teal-600">✅ Fee complete</p>';
+        }
+
+        $response->getBody()->write($html);
+        return $response;
+    }
+
+    private function studentsInBatch(int $batchId)
+    {
+        return User::where('batch_id', $batchId)
+            ->whereHas('role', fn ($q) => $q->where('slug', 'student'))
             ->orderBy('name')
-            ->get()
-            ->all();
+            ->get();
     }
 
     private function validateCreate(array $old): array
@@ -230,6 +326,7 @@ final class AdminPaymentController
         return [
             'user_id' => '',
             'course_id' => '',
+            'batch_id' => '',
             'trx_id' => '',
             'sender_number' => '',
             'amount' => '',
@@ -242,6 +339,7 @@ final class AdminPaymentController
         return [
             'user_id' => '',
             'course_id' => '',
+            'batch_id' => '',
             'trx_id' => '',
             'sender_number' => '',
             'amount' => '',

@@ -11,14 +11,17 @@ use App\Models\Routine;
 use App\Models\User;
 use App\Support\BasePath;
 use App\Support\Flash;
+use App\Support\StaffRedirectTrait;
 use DateTimeImmutable;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
-final class AdminAttendanceController
+class AdminAttendanceController
 {
+    use StaffRedirectTrait;
+
     public function __construct(
         private readonly Twig $twig,
         private readonly AuthService $auth,
@@ -83,7 +86,7 @@ final class AdminAttendanceController
 
         if (!in_array($status, ['present', 'absent', 'late', 'excused'], true)) {
             $this->flash->error('Invalid attendance status.');
-            return $this->redirect('/admin/attendance');
+            return $this->staffRedirect($request, '/attendance');
         }
 
         $record->update([
@@ -94,7 +97,7 @@ final class AdminAttendanceController
 
         $this->flash->success('Attendance updated.');
 
-        return $this->redirect('/admin/attendance');
+        return $this->staffRedirect($request, '/attendance');
     }
 
     public function markForm(Request $request, Response $response): Response
@@ -158,7 +161,7 @@ final class AdminAttendanceController
 
         if ($routine === null) {
             $this->flash->error('Please select a class session to mark.');
-            return $this->redirect('/admin/attendance/mark');
+            return $this->staffRedirect($request, '/attendance/mark');
         }
 
         $statuses = $body['status'] ?? [];
@@ -201,7 +204,7 @@ final class AdminAttendanceController
 
         $this->flash->success('Attendance saved for this session.');
 
-        return $this->redirect('/admin/attendance/mark?batch=' . $routine->batch_id . '&routine=' . $routine->id);
+        return $this->staffRedirect($request, '/attendance/mark?batch=' . $routine->batch_id . '&routine=' . $routine->id);
     }
 
     private function routeId(Request $request): int

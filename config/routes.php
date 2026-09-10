@@ -56,11 +56,27 @@ return function (App $app) {
         $app->post('/fees/pay', [\App\Controllers\FeeController::class, 'pay']);
     })->add($container->get(RequireAuthMiddleware::class));
 
-    // ================= Admin panel (staff only) =================
+    // ================= Admin panel (admin only) =================
     $app->group('/admin', function (RouteCollectorProxy $app) {
         // Dashboard
         $app->get('', [\App\Controllers\AdminDashboardController::class, 'index'])->setName('admin.home');
         $app->get('/', [\App\Controllers\AdminDashboardController::class, 'index']);
+
+        // Trainers
+        $app->get('/trainers', [\App\Controllers\AdminTrainerController::class, 'index'])->setName('admin.trainers');
+        $app->get('/trainers/create', [\App\Controllers\AdminTrainerController::class, 'createForm'])->setName('admin.trainers.create');
+        $app->post('/trainers/create', [\App\Controllers\AdminTrainerController::class, 'create']);
+        $app->get('/trainers/{id:[0-9]+}/edit', [\App\Controllers\AdminTrainerController::class, 'editForm'])->setName('admin.trainers.edit');
+        $app->post('/trainers/{id:[0-9]+}/edit', [\App\Controllers\AdminTrainerController::class, 'edit']);
+        $app->post('/trainers/{id:[0-9]+}/delete', [\App\Controllers\AdminTrainerController::class, 'delete'])->setName('admin.trainers.delete');
+
+        // Cashiers
+        $app->get('/cashiers', [\App\Controllers\AdminCashierController::class, 'index'])->setName('admin.cashiers');
+        $app->get('/cashiers/create', [\App\Controllers\AdminCashierController::class, 'createForm'])->setName('admin.cashiers.create');
+        $app->post('/cashiers/create', [\App\Controllers\AdminCashierController::class, 'create']);
+        $app->get('/cashiers/{id:[0-9]+}/edit', [\App\Controllers\AdminCashierController::class, 'editForm'])->setName('admin.cashiers.edit');
+        $app->post('/cashiers/{id:[0-9]+}/edit', [\App\Controllers\AdminCashierController::class, 'edit']);
+        $app->post('/cashiers/{id:[0-9]+}/delete', [\App\Controllers\AdminCashierController::class, 'delete'])->setName('admin.cashiers.delete');
 
         // Courses
         $app->get('/courses', [\App\Controllers\AdminCourseController::class, 'index'])->setName('admin.courses');
@@ -108,15 +124,65 @@ return function (App $app) {
         $app->get('/payments', [\App\Controllers\AdminPaymentController::class, 'index'])->setName('admin.payments');
         $app->get('/payments/create', [\App\Controllers\AdminPaymentController::class, 'createForm'])->setName('admin.payments.create');
         $app->post('/payments/create', [\App\Controllers\AdminPaymentController::class, 'create']);
+        $app->get('/payments/batches', [\App\Controllers\AdminPaymentController::class, 'batches'])->setName('admin.payments.batches');
+        $app->get('/payments/students', [\App\Controllers\AdminPaymentController::class, 'students'])->setName('admin.payments.students');
+        $app->get('/payments/fee-summary', [\App\Controllers\AdminPaymentController::class, 'feeSummary'])->setName('admin.payments.fee-summary');
         $app->post('/payments/{id:[0-9]+}/verify', [\App\Controllers\AdminPaymentController::class, 'verify'])->setName('admin.payments.verify');
         $app->post('/payments/{id:[0-9]+}/reject', [\App\Controllers\AdminPaymentController::class, 'reject'])->setName('admin.payments.reject');
         $app->post('/payments/{id:[0-9]+}/deadline', [\App\Controllers\AdminPaymentController::class, 'deadline'])->setName('admin.payments.deadline');
 
-        // Assignments (grading)
+        // Assignments (CRUD + grading)
         $app->get('/assignments', [\App\Controllers\AdminAssignmentController::class, 'index'])->setName('admin.assignments');
+        $app->get('/assignments/create', [\App\Controllers\AdminAssignmentController::class, 'createForm'])->setName('admin.assignments.create');
+        $app->post('/assignments/create', [\App\Controllers\AdminAssignmentController::class, 'create']);
+        $app->get('/assignments/{id:[0-9]+}/edit', [\App\Controllers\AdminAssignmentController::class, 'editForm'])->setName('admin.assignments.edit');
+        $app->post('/assignments/{id:[0-9]+}/edit', [\App\Controllers\AdminAssignmentController::class, 'edit']);
+        $app->post('/assignments/{id:[0-9]+}/delete', [\App\Controllers\AdminAssignmentController::class, 'delete'])->setName('admin.assignments.delete');
         $app->get('/assignments/grade/{id:[0-9]+}', [\App\Controllers\AdminAssignmentController::class, 'gradeForm'])->setName('admin.assignments.grade');
         $app->post('/assignments/grade/{id:[0-9]+}', [\App\Controllers\AdminAssignmentController::class, 'grade']);
-    })->add(new RequireRoleMiddleware($container->get(\App\Auth\AuthService::class), ['admin', 'trainer', 'cashier']));
+    })->add(new RequireRoleMiddleware($container->get(\App\Auth\AuthService::class), ['admin']));
+
+    // ================= Cashier panel (cashier only) =================
+    $app->group('/cashier', function (RouteCollectorProxy $app) {
+        $app->get('', [\App\Controllers\CashierDashboardController::class, 'index'])->setName('cashier.home');
+        $app->get('/', [\App\Controllers\CashierDashboardController::class, 'index']);
+
+        // Payments
+        $app->get('/payments', [\App\Controllers\CashierPaymentController::class, 'index'])->setName('cashier.payments');
+        $app->get('/payments/create', [\App\Controllers\CashierPaymentController::class, 'createForm'])->setName('cashier.payments.create');
+        $app->post('/payments/create', [\App\Controllers\CashierPaymentController::class, 'create']);
+        $app->get('/payments/batches', [\App\Controllers\CashierPaymentController::class, 'batches'])->setName('cashier.payments.batches');
+        $app->get('/payments/students', [\App\Controllers\CashierPaymentController::class, 'students'])->setName('cashier.payments.students');
+        $app->get('/payments/fee-summary', [\App\Controllers\CashierPaymentController::class, 'feeSummary'])->setName('cashier.payments.fee-summary');
+        $app->post('/payments/{id:[0-9]+}/verify', [\App\Controllers\CashierPaymentController::class, 'verify'])->setName('cashier.payments.verify');
+        $app->post('/payments/{id:[0-9]+}/reject', [\App\Controllers\CashierPaymentController::class, 'reject'])->setName('cashier.payments.reject');
+        $app->post('/payments/{id:[0-9]+}/deadline', [\App\Controllers\CashierPaymentController::class, 'deadline'])->setName('cashier.payments.deadline');
+    })->add(new RequireRoleMiddleware($container->get(\App\Auth\AuthService::class), ['cashier']));
+
+    // ================= Trainer panel (trainer only) =================
+    $app->group('/trainer', function (RouteCollectorProxy $app) {
+        $app->get('', [\App\Controllers\TrainerDashboardController::class, 'index'])->setName('trainer.home');
+        $app->get('/', [\App\Controllers\TrainerDashboardController::class, 'index']);
+
+        // Routine
+        $app->get('/routines', [\App\Controllers\TrainerRoutineController::class, 'index'])->setName('trainer.routines');
+        $app->get('/routines/create', [\App\Controllers\TrainerRoutineController::class, 'createForm'])->setName('trainer.routines.create');
+        $app->post('/routines/create', [\App\Controllers\TrainerRoutineController::class, 'create']);
+        $app->get('/routines/{id:[0-9]+}/edit', [\App\Controllers\TrainerRoutineController::class, 'editForm'])->setName('trainer.routines.edit');
+        $app->post('/routines/{id:[0-9]+}/edit', [\App\Controllers\TrainerRoutineController::class, 'edit']);
+        $app->post('/routines/{id:[0-9]+}/delete', [\App\Controllers\TrainerRoutineController::class, 'delete'])->setName('trainer.routines.delete');
+
+        // Attendance
+        $app->get('/attendance', [\App\Controllers\TrainerAttendanceController::class, 'index'])->setName('trainer.attendance');
+        $app->post('/attendance/{id:[0-9]+}/override', [\App\Controllers\TrainerAttendanceController::class, 'override'])->setName('trainer.attendance.override');
+        $app->get('/attendance/mark', [\App\Controllers\TrainerAttendanceController::class, 'markForm'])->setName('trainer.attendance.mark');
+        $app->post('/attendance/mark', [\App\Controllers\TrainerAttendanceController::class, 'mark']);
+
+        // Assignments (grading)
+        $app->get('/assignments', [\App\Controllers\TrainerAssignmentController::class, 'index'])->setName('trainer.assignments');
+        $app->get('/assignments/grade/{id:[0-9]+}', [\App\Controllers\TrainerAssignmentController::class, 'gradeForm'])->setName('trainer.assignments.grade');
+        $app->post('/assignments/grade/{id:[0-9]+}', [\App\Controllers\TrainerAssignmentController::class, 'grade']);
+    })->add(new RequireRoleMiddleware($container->get(\App\Auth\AuthService::class), ['trainer']));
 
     $app->post('/logout', [AuthController::class, 'logout'])
         ->setName('logout')

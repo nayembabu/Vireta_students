@@ -71,7 +71,8 @@ final class AdminDashboardController
             ->all();
 
         // ---- Recent students (latest registered first) ----
-        $recentStudents = Student::with(['batch', 'user'])
+        // batch is a nullable belongsTo relation; resolved lazily.
+        $recentStudents = Student::with(['user'])
             ->orderByDesc('id')
             ->limit(8)
             ->get()
@@ -89,8 +90,8 @@ final class AdminDashboardController
             ->all();
 
         // ---- Recent payments ----
-        $recentPayments = Payment::with(['user', 'course'])
-            ->orderByDesc('created_at')
+        // user & course are nullable belongsTo relations; resolved lazily.
+        $recentPayments = Payment::orderByDesc('created_at')
             ->limit(8)
             ->get()
             ->map(static function (Payment $p): array {

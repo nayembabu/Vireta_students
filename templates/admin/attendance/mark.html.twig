@@ -5,7 +5,7 @@
 
 {% block admin_content %}
 <div class="mb-4 rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
-    <form method="get" action="{{ base_path }}/admin/attendance/mark" class="flex flex-wrap items-end gap-3">
+    <form method="get" action="{{ base_path }}{{ staff_base }}/attendance/mark" class="flex flex-wrap items-end gap-3">
         <div>
             <label class="mb-1 block text-sm font-semibold text-slate-700">Batch</label>
             <select name="batch" class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none" onchange="this.form.submit()">
@@ -34,7 +34,7 @@
         <h3 class="font-bold text-slate-900">{{ routine.course.title }}</h3>
         <p class="mt-0.5 text-xs text-slate-500">{{ routine.session_date|date('Y-m-d') }} · {{ routine.start_time|slice(0,5) }}-{{ routine.end_time|slice(0,5) }} · {{ routine.batch.name }}</p>
     </div>
-    <form method="post" action="{{ base_path }}/admin/attendance/mark">
+    <form method="post" action="{{ base_path }}{{ staff_base }}/attendance/mark">
         <input type="hidden" name="_csrf" value="{{ csrf_token }}">
         <input type="hidden" name="routine_id" value="{{ routine.id }}">
         <input type="hidden" name="count" value="{{ students|length }}">

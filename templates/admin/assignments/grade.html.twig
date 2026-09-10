@@ -5,7 +5,7 @@
 
 {% block admin_content %}
 <div class="mx-auto max-w-2xl">
-    <a href="{{ base_path }}/admin/assignments" class="mb-4 inline-block text-sm font-semibold text-teal-700 hover:text-teal-600">← Back to assignments</a>
+    <a href="{{ base_path }}{{ staff_base }}/assignments" class="mb-4 inline-block text-sm font-semibold text-teal-700 hover:text-teal-600">← Back to assignments</a>
 
     <div class="mb-4 rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
         <h3 class="font-bold text-slate-900">{{ submission.assignment_title }}</h3>
@@ -31,7 +31,7 @@
         </p>
         {% endif %}
 
-        <form method="post" action="{{ base_path }}/admin/assignments/grade/{{ submission.id }}">
+        <form method="post" action="{{ base_path }}{{ staff_base }}/assignments/grade/{{ submission.id }}">
             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
 
             <div class="space-y-4">
@@ -50,7 +50,7 @@
 
                 <div class="flex gap-3 pt-2">
                     <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">Save grade</button>
-                    <a href="{{ base_path }}/admin/assignments" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                    <a href="{{ base_path }}{{ staff_base }}/assignments" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
                 </div>
             </div>
         </form>

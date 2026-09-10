@@ -10,30 +10,58 @@
             Record a payment received directly (e.g. cash at the office). It will be marked as <b>verified</b> and added to the student's balance immediately.
         </p>
 
-        <form method="post" action="{{ base_path }}/admin/payments/create">
+        <form method="post" action="{{ base_path }}{{ staff_base }}/payments/create">
             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
 
             <div class="space-y-4">
-                <div>
-                    <label class="mb-1 block text-sm font-semibold text-slate-700">Student *</label>
-                    <select name="user_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
-                        <option value="">Select student</option>
-                        {% for s in students %}
-                        <option value="{{ s.id }}" {{ old.user_id == s.id ? 'selected' : '' }}>{{ s.name }} ({{ s.email }})</option>
-                        {% endfor %}
-                    </select>
-                    {% if errors.user_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.user_id }}</p>{% endif %}
-                </div>
-
+                {# ---- Course -> Batch -> Student cascade ---- #}
                 <div>
                     <label class="mb-1 block text-sm font-semibold text-slate-700">Course *</label>
-                    <select name="course_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    <select name="course_id"
+                            hx-get="{{ base_path }}{{ staff_base }}/payments/batches"
+                            hx-target="#batch-select"
+                            hx-swap="innerHTML"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
                         <option value="">Select course</option>
                         {% for c in courses %}
                         <option value="{{ c.id }}" {{ old.course_id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
                         {% endfor %}
                     </select>
                     {% if errors.course_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.course_id }}</p>{% endif %}
+                </div>
+
+                <div id="batch-select">
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Batch</label>
+                    <select name="batch_id"
+                            hx-get="{{ base_path }}{{ staff_base }}/payments/students"
+                            hx-target="#student-select"
+                            hx-swap="innerHTML"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">Select course first</option>
+                        {% for b in batches %}
+                        <option value="{{ b.id }}" {{ old.batch_id == b.id ? 'selected' : '' }}>{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="student-select">
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Student *</label>
+                    <select name="user_id"
+                            hx-get="{{ base_path }}{{ staff_base }}/payments/fee-summary"
+                            hx-target="#fee-summary"
+                            hx-swap="innerHTML"
+                            hx-include="closest form"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">Select batch first</option>
+                        {% for s in students %}
+                        <option value="{{ s.id }}" {{ old.user_id == s.id ? 'selected' : '' }}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.user_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.user_id }}</p>{% endif %}
+                </div>
+
+                <div id="fee-summary">
+                    <p class="text-xs text-slate-400">Select a student to see the fee summary.</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -66,7 +94,7 @@
 
                 <div class="flex gap-3 pt-2">
                     <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">Record payment</button>
-                    <a href="{{ base_path }}/admin/payments" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                    <a href="{{ base_path }}{{ staff_base }}/payments" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
                 </div>
             </div>
         </form>

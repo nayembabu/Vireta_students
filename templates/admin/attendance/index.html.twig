@@ -5,7 +5,7 @@
 
 {% block admin_content %}
 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-    <form method="get" action="{{ base_path }}/admin/attendance" class="flex flex-wrap items-center gap-2">
+    <form method="get" action="{{ base_path }}{{ staff_base }}/attendance" class="flex flex-wrap items-center gap-2">
         <select name="batch" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
             <option value="">All batches</option>
             {% for b in batches %}
@@ -23,7 +23,7 @@
         </select>
         <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
     </form>
-    <a href="{{ base_path }}/admin/attendance/mark" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Mark attendance</a>
+    <a href="{{ base_path }}{{ staff_base }}/attendance/mark" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Mark attendance</a>
 </div>
 
 <div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
@@ -53,7 +53,7 @@
                     </td>
                     <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ r.check_in_time ?? '—' }}</td>
                     <td class="px-4 py-3">
-                        <form method="post" action="{{ base_path }}/admin/attendance/{{ r.id }}/override" class="flex justify-end gap-1.5">
+                        <form method="post" action="{{ base_path }}{{ staff_base }}/attendance/{{ r.id }}/override" class="flex justify-end gap-1.5">
                             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
                             <select name="status" class="rounded-lg border border-slate-200 px-2 py-1 text-xs focus:border-teal-400 focus:outline-none">
                                 <option value="present" {{ r.status == 'present' ? 'selected' : '' }}>Present</option>

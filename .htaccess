@@ -11,6 +11,9 @@ Options -Indexes
     Require all denied
 </FilesMatch>
 
+# ---- Deny direct access to internal directories --------------------
+RedirectMatch 403 ^/(cache|logs|database|config|src|vendor|plan)(/|$)
+
 # ---- URL rewriting --------------------------------------------------
 RewriteEngine On
 

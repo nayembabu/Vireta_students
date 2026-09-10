@@ -1,0 +1,16 @@
+# =====================================================================
+# ViretaDev - Uploads directory hardening
+# Blocks execution of any script uploaded by users.
+# =====================================================================
+
+Options -ExecCGI -Indexes
+
+# Deny execution of server-side scripts
+<FilesMatch "\.(php|php3|php4|php5|php7|phtml|phar|cgi|pl|py|sh)$">
+    Require all denied
+</FilesMatch>
+
+# Also disable PHP engine if the host uses mod_php
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>

@@ -27,6 +27,9 @@ final class SessionAuthMiddleware implements MiddlewareInterface
         $twigEnv = $this->twig->getEnvironment();
 
         $twigEnv->addGlobal('auth', $user !== null);
+        $twigEnv->addGlobal('staff_base', $user !== null
+            ? ($user->role?->slug === 'trainer' ? '/trainer' : ($user->role?->slug === 'cashier' ? '/cashier' : '/admin'))
+            : '/admin');
         $twigEnv->addGlobal('auth_user', $user !== null
             ? [
                 'id' => $user->id,
@@ -34,6 +37,7 @@ final class SessionAuthMiddleware implements MiddlewareInterface
                 'email' => $user->email,
                 'role_id' => $user->role_id,
                 'role' => $user->role?->name,
+                'role_slug' => $user->role?->slug,
                 'status' => $user->status,
                 'batch_id' => $user->batch_id,
                 'student_id' => $user->student_id,
