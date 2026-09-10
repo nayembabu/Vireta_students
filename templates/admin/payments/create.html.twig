@@ -1,0 +1,75 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Add payment{% endblock %}
+{% block admin_heading %}Add payment{% endblock %}
+
+{% block admin_content %}
+<div class="mx-auto max-w-xl">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <p class="mb-5 text-sm text-slate-500">
+            Record a payment received directly (e.g. cash at the office). It will be marked as <b>verified</b> and added to the student's balance immediately.
+        </p>
+
+        <form method="post" action="{{ base_path }}/admin/payments/create">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Student *</label>
+                    <select name="user_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">Select student</option>
+                        {% for s in students %}
+                        <option value="{{ s.id }}" {{ old.user_id == s.id ? 'selected' : '' }}>{{ s.name }} ({{ s.email }})</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.user_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.user_id }}</p>{% endif %}
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Course *</label>
+                    <select name="course_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">Select course</option>
+                        {% for c in courses %}
+                        <option value="{{ c.id }}" {{ old.course_id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.course_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.course_id }}</p>{% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Amount (৳) *</label>
+                        <input type="number" name="amount" value="{{ old.amount }}" min="0" step="0.01"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.amount %}<p class="mt-1 text-xs text-rose-500">{{ errors.amount }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Payment number (TRX ID) *</label>
+                        <input type="text" name="trx_id" value="{{ old.trx_id }}"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.trx_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.trx_id }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Sender number</label>
+                    <input type="text" name="sender_number" value="{{ old.sender_number }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    {% if errors.sender_number %}<p class="mt-1 text-xs text-rose-500">{{ errors.sender_number }}</p>{% endif %}
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Note</label>
+                    <textarea name="note" rows="3"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">{{ old.note }}</textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">Record payment</button>
+                    <a href="{{ base_path }}/admin/payments" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ batch ? 'Edit batch' : 'Add batch' }}{% endblock %}
+{% block admin_heading %}{{ batch ? 'Edit batch' : 'Add batch' }}{% endblock %}
+
+{% block admin_content %}
+<div class="mx-auto max-w-xl">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <form method="post" action="{{ batch ? base_path ~ '/admin/batches/' ~ batch.id ~ '/edit' : base_path ~ '/admin/batches/create' }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Batch name *</label>
+                    <input type="text" name="name" value="{{ old.name }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    {% if errors.name %}<p class="mt-1 text-xs text-rose-500">{{ errors.name }}</p>{% endif %}
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Course</label>
+                    <select name="course_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">Select course</option>
+                        {% for c in courses %}
+                        <option value="{{ c.id }}" {{ old.course_id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Start date</label>
+                        <input type="date" name="start_date" value="{{ old.start_date }}"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.start_date %}<p class="mt-1 text-xs text-rose-500">{{ errors.start_date }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">End date</label>
+                        <input type="date" name="end_date" value="{{ old.end_date }}"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.end_date %}<p class="mt-1 text-xs text-rose-500">{{ errors.end_date }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Status</label>
+                    <select name="status" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="upcoming" {{ old.status == 'upcoming' ? 'selected' : '' }}>Upcoming</option>
+                        <option value="active" {{ old.status == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="completed" {{ old.status == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="archived" {{ old.status == 'archived' ? 'selected' : '' }}>Archived</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">{{ batch ? 'Save changes' : 'Add batch' }}</button>
+                    <a href="{{ base_path }}/admin/batches" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

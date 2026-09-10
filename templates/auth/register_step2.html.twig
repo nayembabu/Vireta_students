@@ -2,7 +2,7 @@
 
 {% block auth_title %}Personal Information{% endblock %}
 {% block auth_heading %}Personal Information{% endblock %}
-{% block auth_subheading %}Registration no: {{ student.educational_registration_no }} · Batch: {{ student.batch.name ?? '—' }}{% endblock %}
+{% block auth_subheading %}Registration no: {{ student.educational_registration_no }} · Batch: {{ batch_name ?? '—' }}{% endblock %}
 
 {% block auth_content %}
 <form method="post" action="{{ base_path }}/register/details" class="space-y-4">

@@ -62,6 +62,22 @@ return function (App $app) {
         $app->get('', [\App\Controllers\AdminDashboardController::class, 'index'])->setName('admin.home');
         $app->get('/', [\App\Controllers\AdminDashboardController::class, 'index']);
 
+        // Courses
+        $app->get('/courses', [\App\Controllers\AdminCourseController::class, 'index'])->setName('admin.courses');
+        $app->get('/courses/create', [\App\Controllers\AdminCourseController::class, 'createForm'])->setName('admin.courses.create');
+        $app->post('/courses/create', [\App\Controllers\AdminCourseController::class, 'create']);
+        $app->get('/courses/{id:[0-9]+}/edit', [\App\Controllers\AdminCourseController::class, 'editForm'])->setName('admin.courses.edit');
+        $app->post('/courses/{id:[0-9]+}/edit', [\App\Controllers\AdminCourseController::class, 'edit']);
+        $app->post('/courses/{id:[0-9]+}/delete', [\App\Controllers\AdminCourseController::class, 'delete'])->setName('admin.courses.delete');
+
+        // Batches
+        $app->get('/batches', [\App\Controllers\AdminBatchController::class, 'index'])->setName('admin.batches');
+        $app->get('/batches/create', [\App\Controllers\AdminBatchController::class, 'createForm'])->setName('admin.batches.create');
+        $app->post('/batches/create', [\App\Controllers\AdminBatchController::class, 'create']);
+        $app->get('/batches/{id:[0-9]+}/edit', [\App\Controllers\AdminBatchController::class, 'editForm'])->setName('admin.batches.edit');
+        $app->post('/batches/{id:[0-9]+}/edit', [\App\Controllers\AdminBatchController::class, 'edit']);
+        $app->post('/batches/{id:[0-9]+}/delete', [\App\Controllers\AdminBatchController::class, 'delete'])->setName('admin.batches.delete');
+
         // Students (pre-registration records)
         $app->get('/students', [\App\Controllers\AdminStudentController::class, 'index'])->setName('admin.students');
         $app->get('/students/create', [\App\Controllers\AdminStudentController::class, 'createForm'])->setName('admin.students.create');
@@ -90,6 +106,8 @@ return function (App $app) {
 
         // Payments
         $app->get('/payments', [\App\Controllers\AdminPaymentController::class, 'index'])->setName('admin.payments');
+        $app->get('/payments/create', [\App\Controllers\AdminPaymentController::class, 'createForm'])->setName('admin.payments.create');
+        $app->post('/payments/create', [\App\Controllers\AdminPaymentController::class, 'create']);
         $app->post('/payments/{id:[0-9]+}/verify', [\App\Controllers\AdminPaymentController::class, 'verify'])->setName('admin.payments.verify');
         $app->post('/payments/{id:[0-9]+}/reject', [\App\Controllers\AdminPaymentController::class, 'reject'])->setName('admin.payments.reject');
         $app->post('/payments/{id:[0-9]+}/deadline', [\App\Controllers\AdminPaymentController::class, 'deadline'])->setName('admin.payments.deadline');

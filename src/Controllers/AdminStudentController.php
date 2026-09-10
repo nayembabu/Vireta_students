@@ -26,7 +26,8 @@ final class AdminStudentController
 
     public function index(Request $request, Response $response): Response
     {
-        $query = Student::with(['batch', 'user']);
+        // batch is a nullable belongsTo relation; resolved lazily.
+        $query = Student::with(['user']);
 
         $search = trim((string)($request->getQueryParams()['q'] ?? ''));
         $status = trim((string)($request->getQueryParams()['status'] ?? ''));
@@ -305,7 +306,8 @@ final class AdminStudentController
     private function find(Request $request): ?Student
     {
         $id = $this->routeId($request);
-        return Student::with(['batch', 'user'])->find($id);
+        // batch is a nullable belongsTo relation; resolved lazily.
+        return Student::with(['user'])->find($id);
     }
 
     private function studentData(Student $student): array

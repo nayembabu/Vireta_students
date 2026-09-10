@@ -1,0 +1,56 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ course ? 'Edit course' : 'Add course' }}{% endblock %}
+{% block admin_heading %}{{ course ? 'Edit course' : 'Add course' }}{% endblock %}
+
+{% block admin_content %}
+<div class="mx-auto max-w-xl">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <form method="post" action="{{ course ? base_path ~ '/admin/courses/' ~ course.id ~ '/edit' : base_path ~ '/admin/courses/create' }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Course title *</label>
+                    <input type="text" name="title" value="{{ old.title }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    {% if errors.title %}<p class="mt-1 text-xs text-rose-500">{{ errors.title }}</p>{% endif %}
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Description</label>
+                    <textarea name="description" rows="3"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">{{ old.description }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Duration (weeks)</label>
+                        <input type="number" name="duration_weeks" value="{{ old.duration_weeks }}" min="0"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Fee (৳)</label>
+                        <input type="number" name="fee" value="{{ old.fee }}" min="0" step="0.01"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.fee %}<p class="mt-1 text-xs text-rose-500">{{ errors.fee }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Status</label>
+                        <select name="status" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                            <option value="draft" {{ old.status == 'draft' ? 'selected' : '' }}>Draft</option>
+                            <option value="published" {{ old.status == 'published' ? 'selected' : '' }}>Published</option>
+                            <option value="archived" {{ old.status == 'archived' ? 'selected' : '' }}>Archived</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">{{ course ? 'Save changes' : 'Add course' }}</button>
+                    <a href="{{ base_path }}/admin/courses" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

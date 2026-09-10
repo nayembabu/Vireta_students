@@ -42,7 +42,8 @@ final class RoutineController
             ]);
         }
 
-        $routines = Routine::with(['course', 'mentor'])
+        // mentor is a nullable belongsTo relation; resolved lazily.
+        $routines = Routine::with(['course'])
             ->where('batch_id', $batchId)
             ->orderBy('session_date')
             ->orderBy('start_time')

@@ -32,7 +32,10 @@ final class AdminAttendanceController
         $date = trim((string)($request->getQueryParams()['date'] ?? ''));
         $status = trim((string)($request->getQueryParams()['status'] ?? ''));
 
-        $query = Attendance::with(['user', 'course', 'routine']);
+        // NOTE: course & routine are nullable belongsTo relations. Eager loading
+        // them triggers a PHP 8.5 "null array offset" deprecation in Eloquent,
+        // so they are resolved lazily (safe when the FK is null).
+        $query = Attendance::with(['user']);
 
         if ($batchId > 0) {
             $query->whereHas('user', fn ($q) => $q->where('batch_id', $batchId));
@@ -104,7 +107,8 @@ final class AdminAttendanceController
         $routine = null;
 
         if ($batchId > 0) {
-            $routines = Routine::with(['course', 'mentor'])
+            // mentor is a nullable belongsTo relation; resolved lazily.
+            $routines = Routine::with(['course'])
                 ->where('batch_id', $batchId)
                 ->orderByDesc('session_date')
                 ->orderBy('start_time')

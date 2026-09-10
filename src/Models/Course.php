@@ -19,6 +19,11 @@ class Course extends Model
         'fee' => 'decimal:2',
     ];
 
+    public function batches(): HasMany
+    {
+        return $this->hasMany(Batch::class, 'course_id');
+    }
+
     public function assignments(): HasMany
     {
         return $this->hasMany(Assignment::class, 'course_id');

@@ -77,7 +77,8 @@ final class DashboardService
         $classes = [];
         if ($user->batch_id !== null) {
             $horizon = (new DateTimeImmutable('+4 days'))->format('Y-m-d');
-            $routines = Routine::with(['course', 'mentor'])
+            // mentor is a nullable belongsTo relation; resolved lazily.
+            $routines = Routine::with(['course'])
                 ->where('batch_id', $user->batch_id)
                 ->whereBetween('session_date', [$today, $horizon])
                 ->orderBy('session_date')

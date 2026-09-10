@@ -8,6 +8,7 @@ use App\Auth\AuthService;
 use App\Models\Role;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\UserCourse;
 use App\Support\BasePath;
 use App\Support\Flash;
 use DateTimeImmutable;
@@ -89,6 +90,7 @@ final class AuthController
 
         return $this->render($response, 'auth/register_step2.html.twig', [
             'student' => $student,
+            'batch_name' => $student->batch?->name,
             'old' => $this->emptyPersonalFields(),
             'errors' => $this->emptyPersonalFields(),
         ]);
@@ -123,6 +125,7 @@ final class AuthController
         if ($errors !== []) {
             return $this->render($response, 'auth/register_step2.html.twig', [
                 'student' => $student,
+                'batch_name' => $student->batch?->name,
                 'old' => $old,
                 'errors' => array_merge($this->emptyPersonalFields(), $errors),
             ]);
@@ -218,10 +221,32 @@ final class AuthController
             'registered_at' => date('Y-m-d H:i:s'),
         ]);
 
+        // Auto-enroll the student in the course linked to their batch.
+        $this->enrollInBatchCourse($user, $student);
+
         $this->auth->login($user);
         $this->flash->success('Welcome, ' . $student->name . '! Your account has been created successfully.');
 
         return $this->redirect('/');
+    }
+
+    /**
+     * Enroll a newly registered student in the course linked to their batch.
+     * The admin pre-selects the batch on the students record, and the batch
+     * carries a course_id, so the enrollment can be derived automatically.
+     */
+    private function enrollInBatchCourse(User $user, Student $student): void
+    {
+        $batch = $student->batch()->first();
+
+        if ($batch === null || $batch->course_id === null) {
+            return;
+        }
+
+        UserCourse::firstOrCreate(
+            ['user_id' => $user->id, 'course_id' => $batch->course_id],
+            ['status' => 'enrolled', 'enrolled_at' => date('Y-m-d H:i:s')]
+        );
     }
 
     public function showLogin(Request $request, Response $response): Response

@@ -1,0 +1,57 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Batches{% endblock %}
+{% block admin_heading %}Batches{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 flex items-center justify-between gap-3">
+    <p class="text-sm text-slate-500">{{ items|length }} batch(es)</p>
+    <a href="{{ base_path }}/admin/batches/create" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Add batch</a>
+</div>
+
+<div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                    <th class="px-4 py-3">Batch</th>
+                    <th class="px-4 py-3">Course</th>
+                    <th class="px-4 py-3">Start</th>
+                    <th class="px-4 py-3">End</th>
+                    <th class="px-4 py-3">Students</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for b in items %}
+                <tr class="transition hover:bg-slate-50/60">
+                    <td class="px-4 py-3 font-semibold text-slate-800">{{ b.name }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ b.course ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ b.start_date ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ b.end_date ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ b.student_count }}</td>
+                    <td class="px-4 py-3">
+                        {% if b.status == 'active' %}<span class="rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700">Active</span>
+                        {% elseif b.status == 'completed' %}<span class="rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-bold text-sky-700">Completed</span>
+                        {% elseif b.status == 'archived' %}<span class="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500">Archived</span>
+                        {% else %}<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Upcoming</span>{% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex justify-end gap-1.5">
+                            <a href="{{ base_path }}/admin/batches/{{ b.id }}/edit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100" title="Edit">✏️</a>
+                            <form method="post" action="{{ base_path }}/admin/batches/{{ b.id }}/delete" onsubmit="return confirm('Delete this batch?');">
+                                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                                <button type="submit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-400 hover:bg-rose-50 hover:text-rose-500" title="Delete">🗑</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="px-4 py-8 text-center text-sm text-slate-400">No batches yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

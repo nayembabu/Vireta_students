@@ -33,8 +33,9 @@ final class AttendanceController
 
         $this->attendanceService->captureToday($user);
 
-        $records = Attendance::with(['course', 'routine'])
-            ->where('user_id', $user->id)
+        // course & routine are nullable belongsTo relations; resolved lazily to
+        // avoid the PHP 8.5 "null array offset" deprecation in Eloquent.
+        $records = Attendance::where('user_id', $user->id)
             ->orderByDesc('session_date')
             ->orderByDesc('id')
             ->get()
@@ -62,7 +63,8 @@ final class AttendanceController
 
         $upcoming = [];
         if ($user->batch_id !== null) {
-            $upcoming = Routine::with(['course', 'mentor'])
+            // mentor is a nullable belongsTo relation; resolved lazily.
+            $upcoming = Routine::with(['course'])
                 ->where('batch_id', $user->batch_id)
                 ->where('session_date', '>', $today)
                 ->orderBy('session_date')

@@ -30,7 +30,8 @@ final class AdminRoutineController
     {
         $batchId = (int)($request->getQueryParams()['batch'] ?? 0);
 
-        $query = Routine::with(['batch', 'course', 'mentor']);
+        // mentor is a nullable belongsTo relation; resolved lazily.
+        $query = Routine::with(['batch', 'course']);
 
         if ($batchId > 0) {
             $query->where('batch_id', $batchId);

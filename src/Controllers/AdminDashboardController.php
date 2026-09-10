@@ -50,7 +50,8 @@ final class AdminDashboardController
         ];
 
         // ---- Today's classes ----
-        $classes = Routine::with(['batch', 'course', 'mentor'])
+        // mentor is a nullable belongsTo relation; resolved lazily.
+        $classes = Routine::with(['batch', 'course'])
             ->where('session_date', $today)
             ->orderBy('start_time')
             ->get()
