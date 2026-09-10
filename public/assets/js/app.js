@@ -18,18 +18,33 @@
         /* ---------- Mobile menu ---------- */
         var burger = document.getElementById('nav-toggle');
         var menu = document.getElementById('nav-menu');
+        var overlay = document.getElementById('sidebar-overlay');
         if (burger && menu) {
+            var closeMenu = function () {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+                burger.classList.remove('open');
+                overlay && overlay.classList.add('hidden');
+            };
             burger.addEventListener('click', function () {
-                menu.classList.toggle('hidden');
-                burger.classList.toggle('open');
+                var willOpen = menu.classList.contains('hidden');
+                menu.classList.toggle('hidden', !willOpen);
+                menu.classList.toggle('flex', willOpen);
+                overlay && overlay.classList.toggle('hidden', !willOpen);
+            });
+            overlay && overlay.addEventListener('click', closeMenu);
+            menu.querySelectorAll('a, button[type=submit]').forEach(function (el) {
+                el.addEventListener('click', closeMenu);
             });
         }
 
-        /* ---------- Close mobile menu on link click ---------- */
-        menu && menu.querySelectorAll('a').forEach(function (a) {
-            a.addEventListener('click', function () {
-                menu.classList.add('hidden');
-            });
+        /* ---------- Active nav highlight ---------- */
+        var current = window.location.pathname.replace(/\/+$/, '');
+        document.querySelectorAll('.nav-link').forEach(function (link) {
+            var href = (link.getAttribute('href') || '').replace(/\/+$/, '');
+            if (href && (current === href || (href !== '' && current.indexOf(href) === 0))) {
+                link.classList.add('active');
+            }
         });
 
         /* ---------- Scroll reveal ---------- */

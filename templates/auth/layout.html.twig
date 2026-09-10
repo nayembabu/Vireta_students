@@ -3,37 +3,53 @@
 {% block title %}{% block auth_title %}{% endblock %} - {{ app_name }}{% endblock %}
 
 {% block body %}
-<div class="relative flex min-h-screen flex-col overflow-hidden bg-[#faf9f6]">
-    {# ================= Colorful aurora background ================= #}
-    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div class="animate-blob absolute -top-32 -left-32 h-[26rem] w-[26rem] rounded-full bg-indigo-300/50 blur-3xl"></div>
-        <div class="animate-blob animation-delay-2000 absolute top-1/3 -right-28 h-[24rem] w-[24rem] rounded-full bg-fuchsia-300/45 blur-3xl"></div>
-        <div class="animate-blob animation-delay-4000 absolute bottom-0 left-1/4 h-[22rem] w-[22rem] rounded-full bg-cyan-300/40 blur-3xl"></div>
-        <div class="animate-blob animation-delay-6000 absolute -bottom-24 right-1/3 h-80 w-80 rounded-full bg-amber-200/60 blur-3xl"></div>
-        <div class="bg-dots absolute inset-0 opacity-50"></div>
-        {# spinning conic halo #}
-        <div class="absolute left-1/2 top-[-14rem] h-[34rem] w-[34rem] -translate-x-1/2 rounded-full opacity-25 blur-3xl"
-             style="background: conic-gradient(from 0deg, #6366f1, #d946ef, #06b6d4, #f59e0b, #6366f1); animation: spin-slow 18s linear infinite;"></div>
-    </div>
+<div class="flex min-h-screen">
 
-    {# floating sparkles #}
-    <div class="pointer-events-none absolute inset-0" aria-hidden="true">
-        <span class="animate-float absolute left-[8%] top-[18%] text-2xl text-fuchsia-400/70">✦</span>
-        <span class="animate-float absolute right-[10%] top-[24%] text-xl text-indigo-400/70" style="animation-delay: 1.4s;">✦</span>
-        <span class="animate-float absolute bottom-[22%] left-[14%] text-lg text-amber-400/70" style="animation-delay: 2.2s;">✦</span>
-        <span class="animate-float absolute bottom-[16%] right-[16%] text-2xl text-cyan-400/70" style="animation-delay: 0.8s;">✦</span>
-    </div>
+    {# ================= Left brand panel (desktop only) ================= #}
+    <div class="relative hidden w-[46%] shrink-0 overflow-hidden bg-slate-900 lg:block">
+        {# glow orbs #}
+        <div class="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-teal-500/20 blur-3xl"></div>
+        <div class="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-600/25 blur-3xl"></div>
+        <div class="pointer-events-none absolute inset-0 bg-grid opacity-15"></div>
 
-    <div class="relative flex flex-1 items-center justify-center px-4 py-5">
-        <div class="w-full max-w-md">
-            {# ================= Brand header ================= #}
-            <div class="mb-4 text-center">
-                <div class="relative mx-auto inline-block">
-                    <div class="absolute -inset-3 rounded-3xl bg-gradient-to-tr from-indigo-400 via-fuchsia-400 to-amber-300 opacity-60 blur-xl" aria-hidden="true"></div>
-                    <img src="{{ upload('logo/logo2.png') }}" alt="{{ app_name }}"
-                         class="relative h-14 w-14 rounded-2xl bg-white shadow-lg ring-1 ring-slate-200">
+        <div class="relative flex h-full flex-col justify-between p-12">
+            <a href="{{ base_path }}/" class="flex items-center gap-3">
+                <img src="{{ upload('logo/logo2.png') }}" alt="{{ app_name }}" class="h-11 w-11 rounded-xl ring-2 ring-teal-400/40">
+                <span class="text-lg font-extrabold text-white">Vireta<span class="text-teal-400">Dev</span></span>
+            </a>
+
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.25em] text-teal-400">ViretaDev Student Portal</p>
+                <h2 class="font-display mt-4 text-4xl font-bold leading-tight text-white">
+                    Learn.<br>Build.<br><em class="text-teal-300">Grow together.</em>
+                </h2>
+                <p class="mt-5 max-w-md text-sm leading-relaxed text-slate-400">
+                    Courses, class routines, attendance, assignments and fee payments —
+                    everything about your training journey, in one clean dashboard.
+                </p>
+                <div class="mt-8 flex items-center gap-6 text-xs font-semibold text-slate-400">
+                    <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-teal-400"></span> Real projects</span>
+                    <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-teal-400"></span> Mentor support</span>
+                    <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-teal-400"></span> Job placement</span>
                 </div>
-                <h1 class="mt-3 text-2xl font-extrabold tracking-tight text-slate-900">
+            </div>
+
+            <p class="text-xs text-slate-500">© {{ "now"|date("Y") }} ViretaDev. All rights reserved.</p>
+        </div>
+    </div>
+
+    {# ================= Right form panel ================= #}
+    <div class="relative flex min-h-screen w-full flex-col items-center justify-center bg-[#f6f8f8] px-4 py-8 lg:w-[54%]">
+
+        {# mobile brand #}
+        <a href="{{ base_path }}/" class="mb-6 flex items-center gap-2.5 lg:hidden">
+            <img src="{{ upload('logo/logo2.png') }}" alt="{{ app_name }}" class="h-10 w-10 rounded-xl ring-2 ring-teal-400/40">
+            <span class="text-lg font-extrabold text-slate-900">Vireta<span class="text-teal-600">Dev</span></span>
+        </a>
+
+        <div class="w-full max-w-md">
+            <div class="mb-5 text-center lg:text-left">
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">
                     {% block auth_heading %}{% endblock %}
                 </h1>
                 <p class="mt-1 text-sm text-slate-500">{% block auth_subheading %}{% endblock %}</p>
@@ -41,23 +57,18 @@
 
             {% include 'partials/_flash.html.twig' %}
 
-            {# ================= Glass card with gradient border ================= #}
-            <div class="rounded-2xl bg-gradient-to-br from-indigo-500 via-fuchsia-500 to-amber-400 p-[1.5px] shadow-2xl shadow-indigo-500/25">
-                <div class="rounded-2xl bg-white/85 p-4 backdrop-blur-xl sm:p-6">
-                    {% block auth_content %}{% endblock %}
-                </div>
+            {# Card #}
+            <div class="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-xl shadow-slate-900/5 sm:p-6">
+                {% block auth_content %}{% endblock %}
             </div>
 
-            <div class="mt-4 text-center">
-                <a href="{{ base_path }}/" class="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 transition hover:text-indigo-700">
+            <div class="mt-5 text-center">
+                <a href="{{ base_path }}/" class="inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 transition hover:text-teal-600">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
                     Back to home
                 </a>
             </div>
         </div>
     </div>
-
-    {# bottom gradient bar #}
-    <div class="h-1.5 w-full bg-gradient-to-r from-indigo-500 via-fuchsia-500 to-amber-400"></div>
 </div>
 {% endblock %}

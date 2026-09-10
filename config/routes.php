@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Middleware\RedirectIfAuthenticatedMiddleware;
 use App\Middleware\RequireAuthMiddleware;
+use App\Middleware\RequireRoleMiddleware;
 use Slim\App;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
@@ -54,6 +55,50 @@ return function (App $app) {
         $app->get('/fees', [\App\Controllers\FeeController::class, 'index'])->setName('fees');
         $app->post('/fees/pay', [\App\Controllers\FeeController::class, 'pay']);
     })->add($container->get(RequireAuthMiddleware::class));
+
+    // ================= Admin panel (staff only) =================
+    $app->group('/admin', function (RouteCollectorProxy $app) {
+        // Dashboard
+        $app->get('', [\App\Controllers\AdminDashboardController::class, 'index'])->setName('admin.home');
+        $app->get('/', [\App\Controllers\AdminDashboardController::class, 'index']);
+
+        // Students (pre-registration records)
+        $app->get('/students', [\App\Controllers\AdminStudentController::class, 'index'])->setName('admin.students');
+        $app->get('/students/create', [\App\Controllers\AdminStudentController::class, 'createForm'])->setName('admin.students.create');
+        $app->post('/students/create', [\App\Controllers\AdminStudentController::class, 'create']);
+        $app->get('/students/import', [\App\Controllers\AdminStudentController::class, 'importForm'])->setName('admin.students.import');
+        $app->post('/students/import', [\App\Controllers\AdminStudentController::class, 'import']);
+        $app->get('/students/{id:[0-9]+}', [\App\Controllers\AdminStudentController::class, 'show'])->setName('admin.students.show');
+        $app->get('/students/{id:[0-9]+}/edit', [\App\Controllers\AdminStudentController::class, 'editForm'])->setName('admin.students.edit');
+        $app->post('/students/{id:[0-9]+}/edit', [\App\Controllers\AdminStudentController::class, 'edit']);
+        $app->post('/students/{id:[0-9]+}/block', [\App\Controllers\AdminStudentController::class, 'toggleBlock'])->setName('admin.students.block');
+        $app->post('/students/{id:[0-9]+}/delete', [\App\Controllers\AdminStudentController::class, 'delete'])->setName('admin.students.delete');
+
+        // Routine CRUD
+        $app->get('/routines', [\App\Controllers\AdminRoutineController::class, 'index'])->setName('admin.routines');
+        $app->get('/routines/create', [\App\Controllers\AdminRoutineController::class, 'createForm'])->setName('admin.routines.create');
+        $app->post('/routines/create', [\App\Controllers\AdminRoutineController::class, 'create']);
+        $app->get('/routines/{id:[0-9]+}/edit', [\App\Controllers\AdminRoutineController::class, 'editForm'])->setName('admin.routines.edit');
+        $app->post('/routines/{id:[0-9]+}/edit', [\App\Controllers\AdminRoutineController::class, 'edit']);
+        $app->post('/routines/{id:[0-9]+}/delete', [\App\Controllers\AdminRoutineController::class, 'delete'])->setName('admin.routines.delete');
+
+        // Attendance
+        $app->get('/attendance', [\App\Controllers\AdminAttendanceController::class, 'index'])->setName('admin.attendance');
+        $app->post('/attendance/{id:[0-9]+}/override', [\App\Controllers\AdminAttendanceController::class, 'override'])->setName('admin.attendance.override');
+        $app->get('/attendance/mark', [\App\Controllers\AdminAttendanceController::class, 'markForm'])->setName('admin.attendance.mark');
+        $app->post('/attendance/mark', [\App\Controllers\AdminAttendanceController::class, 'mark']);
+
+        // Payments
+        $app->get('/payments', [\App\Controllers\AdminPaymentController::class, 'index'])->setName('admin.payments');
+        $app->post('/payments/{id:[0-9]+}/verify', [\App\Controllers\AdminPaymentController::class, 'verify'])->setName('admin.payments.verify');
+        $app->post('/payments/{id:[0-9]+}/reject', [\App\Controllers\AdminPaymentController::class, 'reject'])->setName('admin.payments.reject');
+        $app->post('/payments/{id:[0-9]+}/deadline', [\App\Controllers\AdminPaymentController::class, 'deadline'])->setName('admin.payments.deadline');
+
+        // Assignments (grading)
+        $app->get('/assignments', [\App\Controllers\AdminAssignmentController::class, 'index'])->setName('admin.assignments');
+        $app->get('/assignments/grade/{id:[0-9]+}', [\App\Controllers\AdminAssignmentController::class, 'gradeForm'])->setName('admin.assignments.grade');
+        $app->post('/assignments/grade/{id:[0-9]+}', [\App\Controllers\AdminAssignmentController::class, 'grade']);
+    })->add(new RequireRoleMiddleware($container->get(\App\Auth\AuthService::class), ['admin', 'trainer', 'cashier']));
 
     $app->post('/logout', [AuthController::class, 'logout'])
         ->setName('logout')

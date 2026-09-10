@@ -1,0 +1,88 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Mark attendance{% endblock %}
+{% block admin_heading %}Mark attendance{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 rounded-2xl bg-white p-5 ring-1 ring-slate-200/70">
+    <form method="get" action="{{ base_path }}/admin/attendance/mark" class="flex flex-wrap items-end gap-3">
+        <div>
+            <label class="mb-1 block text-sm font-semibold text-slate-700">Batch</label>
+            <select name="batch" class="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none" onchange="this.form.submit()">
+                <option value="">Select batch</option>
+                {% for b in batches %}
+                <option value="{{ b.id }}" {{ batch_id == b.id ? 'selected' : '' }}>{{ b.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="min-w-[16rem]">
+            <label class="mb-1 block text-sm font-semibold text-slate-700">Class session</label>
+            <select name="routine" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                <option value="">Select a session</option>
+                {% for r in routines %}
+                <option value="{{ r.id }}" {{ routine_id == r.id ? 'selected' : '' }}>{{ r.session_date|date('Y-m-d') }} · {{ r.start_time|slice(0,5) }}-{{ r.end_time|slice(0,5) }} · {{ r.course.title }} {{ r.topic ? '· ' ~ r.topic : '' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Load students</button>
+    </form>
+</div>
+
+{% if routine %}
+<div class="rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="border-b border-slate-100 px-5 py-4">
+        <h3 class="font-bold text-slate-900">{{ routine.course.title }}</h3>
+        <p class="mt-0.5 text-xs text-slate-500">{{ routine.session_date|date('Y-m-d') }} · {{ routine.start_time|slice(0,5) }}-{{ routine.end_time|slice(0,5) }} · {{ routine.batch.name }}</p>
+    </div>
+    <form method="post" action="{{ base_path }}/admin/attendance/mark">
+        <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+        <input type="hidden" name="routine_id" value="{{ routine.id }}">
+        <input type="hidden" name="count" value="{{ students|length }}">
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                    <tr>
+                        <th class="px-4 py-3">Student</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Check-in time</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    {% for s in students %}
+                    <tr class="transition hover:bg-slate-50/60">
+                        <td class="px-4 py-3 font-semibold text-slate-800">{{ s.name }}</td>
+                        <td class="px-4 py-3">
+                            <input type="hidden" name="user_id[{{ loop.index0 }}]" value="{{ s.user_id }}">
+                            <select name="status[{{ loop.index0 }}]" class="rounded-lg border border-slate-200 px-2 py-1 text-xs focus:border-teal-400 focus:outline-none">
+                                <option value="">—</option>
+                                <option value="present" {{ s.status == 'present' ? 'selected' : '' }}>Present</option>
+                                <option value="late" {{ s.status == 'late' ? 'selected' : '' }}>Late</option>
+                                <option value="absent" {{ s.status == 'absent' ? 'selected' : '' }}>Absent</option>
+                                <option value="excused" {{ s.status == 'excused' ? 'selected' : '' }}>Excused</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="time" name="check_in_time[{{ loop.index0 }}]" value="{{ s.check_in_time }}" class="rounded-lg border border-slate-200 px-2 py-1 text-xs focus:border-teal-400 focus:outline-none">
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="px-4 py-8 text-center text-sm text-slate-400">No students in this batch.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if students is not empty %}
+        <div class="border-t border-slate-100 px-5 py-4">
+            <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">Save attendance</button>
+        </div>
+        {% endif %}
+    </form>
+</div>
+{% else %}
+<div class="rounded-2xl bg-white p-8 text-center ring-1 ring-slate-200/70">
+    <p class="text-sm text-slate-500">Select a batch and a class session to mark attendance.</p>
+</div>
+{% endif %}
+{% endblock %}

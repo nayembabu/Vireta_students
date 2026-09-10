@@ -131,7 +131,7 @@ final class DashboardService
             'greeting' => [
                 'name' => $user->name,
                 'batch' => $user->batch?->name,
-                'role' => $user->role,
+                'role' => $user->role?->name,
                 'pro_pic' => $user->student?->pro_pic,
                 'today_label' => (new DateTimeImmutable())->format('d M Y'),
             ],

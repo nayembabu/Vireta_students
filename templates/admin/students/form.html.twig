@@ -1,0 +1,55 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ student ? 'Edit student' : 'Add student' }}{% endblock %}
+{% block admin_heading %}{{ student ? 'Edit student' : 'Add student' }}{% endblock %}
+
+{% block admin_content %}
+<div class="mx-auto max-w-xl">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <p class="mb-5 text-sm text-slate-500">
+            Add a pre-registration record. The student can then self-register using the registration number and phone number below.
+        </p>
+
+        <form method="post" action="{{ student ? base_path ~ '/admin/students/' ~ student.id ~ '/edit' : base_path ~ '/admin/students/create' }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Educational registration no *</label>
+                    <input type="text" name="educational_registration_no" value="{{ old.educational_registration_no }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    {% if errors.educational_registration_no %}<p class="mt-1 text-xs text-rose-500">{{ errors.educational_registration_no }}</p>{% endif %}
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Phone number *</label>
+                    <input type="text" name="phone_no" value="{{ old.phone_no }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    {% if errors.phone_no %}<p class="mt-1 text-xs text-rose-500">{{ errors.phone_no }}</p>{% endif %}
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Name</label>
+                    <input type="text" name="name" value="{{ old.name }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Batch</label>
+                    <select name="batch_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">Select batch</option>
+                        {% for b in batches %}
+                        <option value="{{ b.id }}" {{ old.batch_id == b.id ? 'selected' : '' }}>{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">{{ student ? 'Save changes' : 'Add student' }}</button>
+                    <a href="{{ base_path }}/admin/students" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

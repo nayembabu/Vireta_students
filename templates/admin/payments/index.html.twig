@@ -1,0 +1,71 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Payments{% endblock %}
+{% block admin_heading %}Payments{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 flex flex-wrap items-center gap-2">
+    <a href="{{ base_path }}/admin/payments?status=pending" class="rounded-lg px-4 py-2 text-sm font-semibold {{ status == 'pending' ? 'bg-amber-500 text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50' }}">Pending ({{ counts.pending }})</a>
+    <a href="{{ base_path }}/admin/payments?status=verified" class="rounded-lg px-4 py-2 text-sm font-semibold {{ status == 'verified' ? 'bg-teal-600 text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50' }}">Verified ({{ counts.verified }})</a>
+    <a href="{{ base_path }}/admin/payments?status=rejected" class="rounded-lg px-4 py-2 text-sm font-semibold {{ status == 'rejected' ? 'bg-rose-600 text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50' }}">Rejected ({{ counts.rejected }})</a>
+</div>
+
+<div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                    <th class="px-4 py-3">Student</th>
+                    <th class="px-4 py-3">Course</th>
+                    <th class="px-4 py-3">TRX ID</th>
+                    <th class="px-4 py-3">Sender</th>
+                    <th class="px-4 py-3">Amount</th>
+                    <th class="px-4 py-3">Date</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for p in items %}
+                <tr class="transition hover:bg-slate-50/60">
+                    <td class="px-4 py-3 font-semibold text-slate-800">{{ p.student }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ p.course ?? '—' }}</td>
+                    <td class="px-4 py-3 font-mono text-xs text-slate-600">{{ p.trx_id }}</td>
+                    <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ p.sender_number }}</td>
+                    <td class="px-4 py-3 font-bold text-slate-800">৳ {{ p.amount|number_format(0) }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ p.date }}</td>
+                    <td class="px-4 py-3">
+                        {% if p.status == 'verified' %}<span class="rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700">Verified</span>
+                        {% elseif p.status == 'rejected' %}<span class="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-600">Rejected</span>
+                        {% else %}<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Pending</span>{% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex justify-end gap-1.5">
+                        {% if p.status == 'pending' %}
+                            <form method="post" action="{{ base_path }}/admin/payments/{{ p.id }}/verify">
+                                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                                <button type="submit" class="rounded-lg bg-teal-600 px-2 py-1 text-xs font-semibold text-white transition hover:bg-teal-500">✓ Verify</button>
+                            </form>
+                            <form method="post" action="{{ base_path }}/admin/payments/{{ p.id }}/reject">
+                                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                                <button type="submit" class="rounded-lg bg-rose-600 px-2 py-1 text-xs font-semibold text-white transition hover:bg-rose-500">✕ Reject</button>
+                            </form>
+                            <form method="post" action="{{ base_path }}/admin/payments/{{ p.id }}/deadline" class="flex items-center gap-1">
+                                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                                <input type="date" name="fee_deadline" class="rounded-lg border border-slate-200 px-2 py-1 text-xs focus:border-teal-400 focus:outline-none" title="Set fee deadline">
+                                <button type="submit" class="rounded-lg bg-slate-900 px-2 py-1 text-xs font-semibold text-white transition hover:bg-slate-700" title="Set deadline">🗓</button>
+                            </form>
+                        {% else %}
+                            <span class="text-xs text-slate-300">—</span>
+                        {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="px-4 py-8 text-center text-sm text-slate-400">No payments found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

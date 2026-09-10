@@ -1,68 +1,64 @@
 {% extends 'app/layout.html.twig' %}
 
 {% block page_title %}Attendance{% endblock %}
+{% block page_heading %}Attendance{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-extrabold text-slate-900">Attendance</h1>
-        <p class="text-sm text-slate-500 mt-1">Your attendance summary and records.</p>
+<p class="mb-6 text-sm text-slate-500">Your attendance summary and records.</p>
+
+<div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-5 sm:gap-4">
+    <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
+        <div class="text-3xl font-extrabold text-teal-600">{{ summary.present }}</div>
+        <div class="mt-1 text-sm font-semibold text-slate-500">Present</div>
+    </div>
+    <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
+        <div class="text-3xl font-extrabold text-amber-500">{{ summary.late }}</div>
+        <div class="mt-1 text-sm font-semibold text-slate-500">Late</div>
+    </div>
+    <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
+        <div class="text-3xl font-extrabold text-rose-500">{{ summary.absent }}</div>
+        <div class="mt-1 text-sm font-semibold text-slate-500">Absent</div>
+    </div>
+    <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
+        <div class="text-3xl font-extrabold text-sky-500">{{ summary.excused }}</div>
+        <div class="mt-1 text-sm font-semibold text-slate-500">Excused</div>
+    </div>
+    <div class="col-span-2 rounded-2xl bg-slate-900 p-4 ring-1 ring-slate-900 md:col-span-1">
+        <div class="text-3xl font-extrabold text-teal-400">{{ summary.percentage }}%</div>
+        <div class="mt-1 text-sm font-semibold text-slate-400">Rate</div>
     </div>
 </div>
 
-<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-    <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-2xl p-4">
-        <div class="text-3xl font-extrabold text-emerald-600">{{ summary.present }}</div>
-        <div class="text-sm font-semibold text-emerald-800 mt-1">Present</div>
-    </div>
-    <div class="bg-amber-50 ring-1 ring-amber-200 rounded-2xl p-4">
-        <div class="text-3xl font-extrabold text-amber-600">{{ summary.late }}</div>
-        <div class="text-sm font-semibold text-amber-800 mt-1">Late</div>
-    </div>
-    <div class="bg-rose-50 ring-1 ring-rose-200 rounded-2xl p-4">
-        <div class="text-3xl font-extrabold text-rose-600">{{ summary.absent }}</div>
-        <div class="text-sm font-semibold text-rose-800 mt-1">Absent</div>
-    </div>
-    <div class="bg-sky-50 ring-1 ring-sky-200 rounded-2xl p-4">
-        <div class="text-3xl font-extrabold text-sky-600">{{ summary.excused }}</div>
-        <div class="text-sm font-semibold text-sky-800 mt-1">Excused</div>
-    </div>
-    <div class="bg-indigo-50 ring-1 ring-indigo-200 rounded-2xl p-4">
-        <div class="text-3xl font-extrabold text-indigo-600">{{ summary.percentage }}%</div>
-        <div class="text-sm font-semibold text-indigo-800 mt-1">Attendance rate</div>
-    </div>
-</div>
-
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
     <div class="lg:col-span-2">
-        <div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-6">
-            <h2 class="font-bold text-slate-900 mb-4">Records</h2>
+        <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+            <h2 class="mb-4 font-bold text-slate-900">Records</h2>
 
             {% if grouped is empty %}
             <p class="text-sm text-slate-500">No attendance records yet.</p>
             {% else %}
             {% for course, rows in grouped %}
             <div class="mb-5 last:mb-0">
-                <h3 class="text-sm font-bold text-indigo-600 mb-2">{{ course }}</h3>
+                <h3 class="mb-2 text-sm font-bold text-teal-700">{{ course }}</h3>
                 <div class="space-y-2">
                     {% for r in rows %}
                     <div class="flex flex-wrap items-center gap-3 rounded-xl border border-slate-100 px-4 py-3">
                         <span class="text-sm font-semibold text-slate-800">{{ r.session_date|date('d M Y') }}</span>
                         {% if r.start_time %}
-                        <span class="text-xs text-slate-400">{{ r.start_time }} - {{ r.end_time }}</span>
+                        <span class="font-mono text-xs text-slate-400">{{ r.start_time }} – {{ r.end_time }}</span>
                         {% endif %}
-                        <span class="ml-auto inline-block px-2.5 py-0.5 rounded-full text-xs font-bold
-                            {{ r.status == 'present' ? 'bg-emerald-100 text-emerald-700'
-                             : r.status == 'late' ? 'bg-amber-100 text-amber-700'
-                             : r.status == 'absent' ? 'bg-rose-100 text-rose-700'
-                             : 'bg-sky-100 text-sky-700' }}">
+                        <span class="ml-auto inline-block rounded-full px-2.5 py-0.5 text-xs font-bold
+                            {{ r.status == 'present' ? 'bg-teal-50 text-teal-700 ring-1 ring-teal-200'
+                             : r.status == 'late' ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+                             : r.status == 'absent' ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200'
+                             : 'bg-sky-50 text-sky-700 ring-1 ring-sky-200' }}">
                             {{ r.status == 'present' ? 'Present'
                                : r.status == 'late' ? 'Late'
                                : r.status == 'absent' ? 'Absent'
                                : 'Excused' }}
                         </span>
                         {% if r.status in ['present', 'late'] and r.check_in_time %}
-                        <span class="text-xs text-slate-400">Checked in at {{ r.check_in_time }}</span>
+                        <span class="font-mono text-xs text-slate-400">in {{ r.check_in_time }}</span>
                         {% endif %}
                     </div>
                     {% endfor %}
@@ -74,8 +70,8 @@
     </div>
 
     <div>
-        <div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-6">
-            <h2 class="font-bold text-slate-900 mb-4">Upcoming classes</h2>
+        <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+            <h2 class="mb-4 font-bold text-slate-900">Upcoming classes</h2>
             {% if upcoming is empty %}
             <p class="text-sm text-slate-500">No upcoming classes.</p>
             {% else %}
@@ -83,9 +79,9 @@
                 {% for u in upcoming %}
                 <div class="rounded-xl border border-slate-100 p-3.5">
                     <div class="text-xs text-slate-400">{{ u.course }}</div>
-                    <div class="font-semibold text-slate-800 text-sm mt-0.5">{{ u.topic }}</div>
-                    <div class="text-xs text-slate-500 mt-1">{{ u.session_date|date('d M Y') }} · {{ u.start_time }} - {{ u.end_time }}</div>
-                    {% if u.room %}<div class="text-xs text-slate-400 mt-0.5">Room: {{ u.room }}</div>{% endif %}
+                    <div class="mt-0.5 text-sm font-semibold text-slate-800">{{ u.topic }}</div>
+                    <div class="mt-1 font-mono text-xs text-slate-500">{{ u.session_date|date('d M Y') }} · {{ u.start_time }} – {{ u.end_time }}</div>
+                    {% if u.room %}<div class="mt-0.5 text-xs text-slate-400">Room: {{ u.room }}</div>{% endif %}
                 </div>
                 {% endfor %}
             </div>

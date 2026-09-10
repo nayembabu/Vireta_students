@@ -1,0 +1,42 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Import students{% endblock %}
+{% block admin_heading %}Import students{% endblock %}
+
+{% block admin_content %}
+<div class="mx-auto max-w-xl">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <h3 class="mb-2 font-bold text-slate-900">Bulk import pre-records</h3>
+        <p class="mb-4 text-sm text-slate-500">
+            Upload a CSV file with columns <code class="rounded bg-slate-100 px-1 font-mono text-xs">educational_registration_no</code> (or <code class="rounded bg-slate-100 px-1 font-mono text-xs">reg_no</code>), <code class="rounded bg-slate-100 px-1 font-mono text-xs">phone_no</code> (or <code class="rounded bg-slate-100 px-1 font-mono text-xs">phone</code>) and optionally <code class="rounded bg-slate-100 px-1 font-mono text-xs">name</code>. The first row must be the header.
+        </p>
+
+        <form method="post" action="{{ base_path }}/admin/students/import" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Batch (optional)</label>
+                    <select name="batch_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        <option value="">No batch</option>
+                        {% for b in batches %}
+                        <option value="{{ b.id }}">{{ b.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">CSV file *</label>
+                    <input type="file" name="csv_file" accept=".csv,text/csv" required
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">Import</button>
+                    <a href="{{ base_path }}/admin/students" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

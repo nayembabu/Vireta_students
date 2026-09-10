@@ -1,0 +1,71 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Student detail{% endblock %}
+{% block admin_heading %}Student detail{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <a href="{{ base_path }}/admin/students" class="text-sm font-semibold text-teal-700 hover:text-teal-600">← Back to students</a>
+    <div class="flex gap-2">
+        <a href="{{ base_path }}/admin/students/{{ student.id }}/edit" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">✏️ Edit</a>
+        <form method="post" action="{{ base_path }}/admin/students/{{ student.id }}/block">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+            <button type="submit" class="rounded-lg {{ student.status == 'blocked' ? 'bg-teal-600 text-white hover:bg-teal-500' : 'bg-rose-600 text-white hover:bg-rose-500' }} px-4 py-2 text-sm font-semibold">
+                {{ student.status == 'blocked' ? '🔓 Unblock' : '🔒 Block' }}
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <h3 class="mb-4 font-bold text-slate-900">Identity</h3>
+        <dl class="space-y-3 text-sm">
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Name</dt><dd class="font-semibold text-slate-800">{{ student.name ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Reg no</dt><dd class="font-mono text-slate-800">{{ student.reg_no }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Phone</dt><dd class="font-mono text-slate-800">{{ student.phone_no }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Batch</dt><dd class="text-slate-800">{{ student.batch ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Status</dt>
+                <dd>
+                    {% if student.status == 'registered' %}<span class="rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700">Registered</span>
+                    {% elseif student.status == 'blocked' %}<span class="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-600">Blocked</span>
+                    {% else %}<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Pending</span>{% endif %}
+                </dd>
+            </div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Registered at</dt><dd class="text-slate-800">{{ student.registered_at ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Added on</dt><dd class="text-slate-800">{{ student.created_at }}</dd></div>
+        </dl>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <h3 class="mb-4 font-bold text-slate-900">Account</h3>
+        {% if student.account %}
+        <dl class="space-y-3 text-sm">
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Email</dt><dd class="text-slate-800">{{ student.account.email }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Username</dt><dd class="text-slate-800">{{ student.account.username }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Status</dt><dd class="text-slate-800">{{ student.account.status }}</dd></div>
+        </dl>
+        {% else %}
+        <p class="text-sm text-slate-500">No account yet. This student has not completed registration.</p>
+        {% endif %}
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70 lg:col-span-2">
+        <h3 class="mb-4 font-bold text-slate-900">Personal info</h3>
+        <dl class="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Father</dt><dd class="text-slate-800">{{ student.father_name ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Mother</dt><dd class="text-slate-800">{{ student.mother_name ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Email</dt><dd class="text-slate-800">{{ student.email ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">DOB</dt><dd class="text-slate-800">{{ student.date_of_birth ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Gender</dt><dd class="text-slate-800">{{ student.gender ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Blood group</dt><dd class="text-slate-800">{{ student.blood_group ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">SSC roll</dt><dd class="text-slate-800">{{ student.ssc_roll ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">SSC registration</dt><dd class="text-slate-800">{{ student.ssc_registration ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">WhatsApp</dt><dd class="text-slate-800">{{ student.whatsapp_number ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">Emergency</dt><dd class="text-slate-800">{{ student.emergency_phone ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3"><dt class="text-slate-400">NID/Birth no</dt><dd class="text-slate-800">{{ student.nid_birth_no ?? '—' }}</dd></div>
+            <div class="flex justify-between gap-3 sm:col-span-2"><dt class="text-slate-400">Address</dt><dd class="text-slate-800">{{ student.address ?? '—' }}</dd></div>
+        </dl>
+    </div>
+</div>
+{% endblock %}

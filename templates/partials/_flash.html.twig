@@ -1,10 +1,17 @@
 {% if flash is defined and flash|length %}
     {% for item in flash %}
-        <div class="mb-4 rounded-xl px-4 py-3 text-sm font-medium ring-1
-            {% if item.status == 'success' %}bg-emerald-50 text-emerald-700 ring-emerald-200
+        <div class="flash-item mb-5 flex items-start gap-3 rounded-2xl px-4 py-3.5 text-sm font-medium ring-1
+            {% if item.status == 'success' %}bg-teal-50 text-teal-800 ring-teal-200
             {% elseif item.status == 'error' %}bg-rose-50 text-rose-700 ring-rose-200
             {% else %}bg-sky-50 text-sky-700 ring-sky-200{% endif %}">
-            {{ item.message }}
+            {% if item.status == 'success' %}
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-teal-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {% elseif item.status == 'error' %}
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-2.343c0 5.51-4.47 9.985-9.985 9.985H12l-.447-.005A9.985 9.985 0 012.015 12.407 9.985 9.985 0 0112 2.015h.447C17.53 2.015 22 6.49 22 11.407z"/></svg>
+            {% else %}
+            <svg class="mt-0.5 h-5 w-5 shrink-0 text-sky-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+            {% endif %}
+            <span class="flex-1">{{ item.message }}</span>
         </div>
     {% endfor %}
 {% endif %}

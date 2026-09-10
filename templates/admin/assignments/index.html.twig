@@ -1,0 +1,75 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Assignments{% endblock %}
+{% block admin_heading %}Assignments{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <form method="get" action="{{ base_path }}/admin/assignments" class="flex items-center gap-2">
+        <select name="course" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+            <option value="">All courses</option>
+            {% for c in courses %}
+            <option value="{{ c.id }}" {{ course_id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
+            {% endfor %}
+        </select>
+        <label class="flex items-center gap-2 text-sm text-slate-600">
+            <input type="checkbox" name="ungraded" value="1" {{ ungraded ? 'checked' : '' }} class="rounded border-slate-300 text-teal-600 focus:ring-teal-400"> Only ungraded
+        </label>
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
+    </form>
+</div>
+
+<div class="space-y-4">
+    {% for a in items %}
+    <div class="rounded-2xl bg-white ring-1 ring-slate-200/70">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-5 py-4">
+            <div>
+                <h3 class="font-bold text-slate-900">{{ a.title }}</h3>
+                <p class="mt-0.5 text-xs text-slate-500">{{ a.course }} · Due {{ a.due_date }} · Max {{ a.max_score }}</p>
+            </div>
+            <span class="text-xs font-semibold text-slate-500">{{ a.submission_count }} submission(s) · {{ a.ungraded_count }} ungraded</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                    <tr>
+                        <th class="px-4 py-3">Student</th>
+                        <th class="px-4 py-3">Version</th>
+                        <th class="px-4 py-3">Submitted</th>
+                        <th class="px-4 py-3">Score</th>
+                        <th class="px-4 py-3 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    {% for s in a.submissions %}
+                    <tr class="transition hover:bg-slate-50/60">
+                        <td class="px-4 py-3 font-semibold text-slate-800">{{ s.student }}</td>
+                        <td class="px-4 py-3 text-xs text-slate-500">v{{ s.version }}</td>
+                        <td class="px-4 py-3 text-xs text-slate-500">{{ s.submitted_at }}</td>
+                        <td class="px-4 py-3">
+                            {% if s.score is not null %}
+                            <span class="font-bold text-teal-600">{{ s.score }}/{{ a.max_score }}</span>
+                            {% else %}
+                            <span class="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Ungraded</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="{{ base_path }}/admin/assignments/grade/{{ s.id }}" class="rounded-lg {{ s.score is null ? 'bg-teal-600 text-white hover:bg-teal-500' : 'border border-slate-200 text-slate-600 hover:bg-slate-50' }} px-3 py-1.5 text-xs font-semibold">
+                                {{ s.score is null ? 'Grade' : 'View / regrade' }}
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="px-4 py-6 text-center text-sm text-slate-400">No submissions.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="rounded-2xl bg-white p-8 text-center ring-1 ring-slate-200/70">
+        <p class="text-sm text-slate-500">No assignments found.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

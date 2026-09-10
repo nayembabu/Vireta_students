@@ -1,15 +1,16 @@
 {% extends 'app/layout.html.twig' %}
 
 {% block page_title %}Not Found{% endblock %}
+{% block page_heading %}Not Found{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto text-center py-16">
-    <div class="h-16 w-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-6">؟</div>
-    <h1 class="text-2xl font-extrabold text-slate-900">Not Found</h1>
-    <p class="text-slate-500 mt-2">{{ message }}</p>
-    <a href="{{ base_path }}/assignments"
-       class="inline-block mt-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-2.5 transition">
-        Back to assignments
+<div class="mx-auto max-w-md py-16 text-center">
+    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-900 text-3xl font-extrabold text-teal-400">?</div>
+    <h1 class="text-2xl font-extrabold text-slate-900">Page not found</h1>
+    <p class="mt-2 text-slate-500">{{ message }}</p>
+    <a href="{{ base_path }}/"
+       class="mt-6 inline-block rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-600">
+        Back to dashboard
     </a>
 </div>
 {% endblock %}

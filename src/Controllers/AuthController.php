@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Auth\AuthService;
+use App\Models\Role;
 use App\Models\Student;
 use App\Models\User;
 use App\Support\BasePath;
@@ -201,9 +202,11 @@ final class AuthController
 
         $user = User::create([
             'name' => $student->name,
+            'username' => $this->uniqueUsername($email),
             'email' => $email,
+            'phone' => $student->phone_no,
             'password_hash' => password_hash($password, PASSWORD_DEFAULT),
-            'role' => 'student',
+            'role_id' => Role::STUDENT,
             'status' => 'active',
             'batch_id' => $student->batch_id,
             'student_id' => $student->id,
@@ -300,6 +303,21 @@ final class AuthController
         }
 
         return $errors;
+    }
+
+    private function uniqueUsername(string $email): string
+    {
+        $base = strtolower(trim(explode('@', $email)[0] ?? ''));
+        $base = preg_replace('/[^a-z0-9._-]/', '', $base) ?: 'user';
+
+        $username = $base;
+        $i = 1;
+        while (User::where('username', $username)->exists()) {
+            $username = $base . $i;
+            $i++;
+        }
+
+        return $username;
     }
 
     private function normalizePhone(string $phone): string

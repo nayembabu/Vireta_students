@@ -15,7 +15,17 @@ final class AuthService
 
     public function attempt(string $identifier, string $password): bool
     {
-        $user = User::where('email', $identifier)->first();
+        $identifier = strtolower(trim($identifier));
+
+        $query = User::where('email', $identifier)
+            ->orWhere('username', $identifier);
+
+        $phone = $this->normalizePhone($identifier);
+        if ($phone !== '') {
+            $query->orWhere('phone', $phone);
+        }
+
+        $user = $query->first();
 
         if (!$user instanceof User) {
             return false;
@@ -62,5 +72,36 @@ final class AuthService
             return null;
         }
         return User::find($this->id());
+    }
+
+    private function normalizePhone(string $phone): string
+    {
+        $phone = preg_replace('/[\s\-\(\)]/', '', $phone) ?? '';
+        $phone = trim($phone);
+
+        if ($phone === '') {
+            return '';
+        }
+
+        if (str_starts_with($phone, '00')) {
+            $phone = '+' . substr($phone, 2);
+        }
+
+        if (str_starts_with($phone, '+880')) {
+            $digits = substr($phone, 4);
+            if (strlen($digits) === 10) {
+                return $phone;
+            }
+        }
+
+        if (str_starts_with($phone, '8801') && strlen($phone) === 13) {
+            return '+' . $phone;
+        }
+
+        if (str_starts_with($phone, '01') && strlen($phone) === 11) {
+            return '+880' . substr($phone, 1);
+        }
+
+        return $phone;
     }
 }

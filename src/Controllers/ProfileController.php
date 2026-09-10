@@ -69,6 +69,7 @@ final class ProfileController
         $data = $request->getParsedBody();
         $old = [
             'name' => trim((string)($data['name'] ?? '')),
+            'username' => strtolower(trim((string)($data['username'] ?? ''))),
             'father_name' => trim((string)($data['father_name'] ?? '')),
             'mother_name' => trim((string)($data['mother_name'] ?? '')),
             'address' => trim((string)($data['address'] ?? '')),
@@ -82,7 +83,7 @@ final class ProfileController
             'nid_birth_no' => trim((string)($data['nid_birth_no'] ?? '')),
         ];
 
-        $errors = $this->validateProfile($old);
+        $errors = $this->validateProfile($old, $user->id);
 
         if ($errors !== []) {
             return $this->render($response, 'profile/index.html.twig', [
@@ -110,7 +111,7 @@ final class ProfileController
             'nid_birth_no' => $old['nid_birth_no'] !== '' ? $old['nid_birth_no'] : null,
         ]);
 
-        $user->update(['name' => $old['name']]);
+        $user->update(['name' => $old['name'], 'username' => $old['username']]);
 
         $this->flash->success('Profile updated successfully.');
 
@@ -300,7 +301,7 @@ final class ProfileController
         return $user->student_id !== null ? Student::find($user->student_id) : null;
     }
 
-    private function validateProfile(array $old): array
+    private function validateProfile(array $old, int $userId): array
     {
         $errors = [];
 
@@ -308,6 +309,15 @@ final class ProfileController
             if ($old[$field] === '') {
                 $errors[$field] = 'Please fill in this field.';
             }
+        }
+
+        $username = $old['username'];
+        if ($username === '') {
+            $errors['username'] = 'Please enter a username.';
+        } elseif (!preg_match('/^[a-z0-9._-]{3,30}$/', $username)) {
+            $errors['username'] = 'Use 3-30 characters: letters, numbers, dot, dash or underscore.';
+        } elseif (User::where('username', $username)->where('id', '!=', $userId)->exists()) {
+            $errors['username'] = 'This username is already taken.';
         }
 
         if ($old['date_of_birth'] === '') {
@@ -327,6 +337,7 @@ final class ProfileController
     {
         return [
             'name' => '',
+            'username' => '',
             'father_name' => '',
             'mother_name' => '',
             'date_of_birth' => '',

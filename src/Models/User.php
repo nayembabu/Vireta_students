@@ -13,11 +13,16 @@ class User extends Model
     protected $table = 'users';
 
     protected $fillable = [
-        'name', 'email', 'phone', 'password_hash', 'role',
+        'name', 'username', 'email', 'phone', 'password_hash', 'role_id',
         'status', 'batch_id', 'student_id',
     ];
 
     protected $hidden = ['password_hash'];
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 
     public function student(): BelongsTo
     {

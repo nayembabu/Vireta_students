@@ -4,6 +4,27 @@
    card hovers, scroll reveal, floating elements.
    ====================================================================== */
 
+/* ---------- App shell: topbar active state ---------- */
+.nav-link {
+    transition: background .15s ease, color .15s ease;
+}
+.nav-link.active {
+    background: rgba(13, 148, 136, 0.10);
+    color: #0f766e;
+}
+.nav-link.active .nav-icon { color: #0d9488; }
+
+/* ---------- Collapsed avatar edge ---------- */
+#sidebar {
+    transition: width .25s ease;
+}
+
+/* ---------- Flash animations ---------- */
+@keyframes flash-in {
+    from { opacity: 0; transform: translateY(-8px); }
+}
+.flash-item { animation: flash-in .35s ease both; }
+
 /* ---------- Base ---------- */
 html { scroll-behavior: smooth; }
 

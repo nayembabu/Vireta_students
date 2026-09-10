@@ -1,0 +1,149 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Dashboard{% endblock %}
+{% block admin_heading %}Dashboard{% endblock %}
+
+{% block admin_content %}
+{# ============ Greeting banner ============ #}
+<div class="relative mb-6 overflow-hidden rounded-3xl bg-slate-900 p-6 text-white shadow-xl shadow-slate-900/20 sm:p-8">
+    <div class="pointer-events-none absolute inset-0 bg-grid opacity-20"></div>
+    <div class="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-teal-500/25 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-indigo-500/20 blur-3xl"></div>
+    <div class="relative">
+        <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-teal-400">Admin dashboard</p>
+        <h2 class="mt-1 text-xl font-extrabold sm:text-2xl">Welcome, {{ admin.name }}! 🎉</h2>
+        <p class="mt-1 text-sm text-slate-400">{{ admin.role }} · {{ admin.today_label }}</p>
+    </div>
+</div>
+
+{# ============ Stat cards ============ #}
+<div class="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <a href="{{ base_path }}/admin/students" class="group rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-teal-300 sm:p-5">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total students</div>
+        <div class="mt-1 text-3xl font-extrabold text-slate-900">{{ totals.students }}</div>
+        <div class="mt-1 text-xs text-slate-400">{{ totals.registered }} registered · {{ totals.pending }} pending</div>
+    </a>
+    <a href="{{ base_path }}/admin/students?status=pending" class="group rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-amber-300 sm:p-5">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pending register</div>
+        <div class="mt-1 text-3xl font-extrabold text-amber-600">{{ totals.pending }}</div>
+        <div class="mt-1 text-xs text-slate-400">awaiting self-registration</div>
+    </a>
+    <a href="{{ base_path }}/admin/payments?status=pending" class="group rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-rose-300 sm:p-5">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Payments to verify</div>
+        <div class="mt-1 text-3xl font-extrabold text-rose-600">{{ queue.pending_payments }}</div>
+        <div class="mt-1 text-xs text-slate-400">pending verification</div>
+    </a>
+    <a href="{{ base_path }}/admin/assignments?ungraded=1" class="group rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-sky-300 sm:p-5">
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">To grade</div>
+        <div class="mt-1 text-3xl font-extrabold text-sky-600">{{ queue.ungraded }}</div>
+        <div class="mt-1 text-xs text-slate-400">ungraded submissions</div>
+    </a>
+</div>
+
+{# ============ Today's classes + overview ============ #}
+<div class="mb-6 grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900">📅 Today's classes</h3>
+            <a href="{{ base_path }}/admin/routines" class="text-xs font-semibold text-teal-700 hover:text-teal-600">Manage →</a>
+        </div>
+        {% if classes is empty %}
+        <p class="text-sm text-slate-500">No classes scheduled today.</p>
+        {% else %}
+        <div class="space-y-2.5">
+            {% for c in classes %}
+            <div class="flex items-center gap-3 rounded-xl border border-slate-100 px-3 py-3">
+                <div class="min-w-0 flex-1">
+                    <div class="truncate text-sm font-semibold text-slate-800">{{ c.topic }}</div>
+                    <div class="truncate text-xs text-slate-400">{{ c.course }}{% if c.batch %} · {{ c.batch }}{% endif %}{% if c.room %} · {{ c.room }}{% endif %}</div>
+                </div>
+                <span class="shrink-0 font-mono text-[11px] font-medium text-slate-500">{{ c.start_time|slice(0,5) }}-{{ c.end_time|slice(0,5) }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+        <h3 class="mb-4 font-bold text-slate-900">📚 Overview</h3>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl bg-slate-50 p-3.5">
+                <div class="text-2xl font-extrabold text-slate-800">{{ totals.batches }}</div>
+                <div class="mt-0.5 text-xs font-semibold text-slate-500">Batches</div>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-3.5">
+                <div class="text-2xl font-extrabold text-slate-800">{{ totals.courses }}</div>
+                <div class="mt-0.5 text-xs font-semibold text-slate-500">Courses</div>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-3.5">
+                <div class="text-2xl font-extrabold text-slate-800">{{ totals.blocked }}</div>
+                <div class="mt-0.5 text-xs font-semibold text-slate-500">Blocked</div>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-3.5">
+                <div class="text-2xl font-extrabold text-slate-800">{{ totals.staff }}</div>
+                <div class="mt-0.5 text-xs font-semibold text-slate-500">Staff</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ============ Recent students + payments ============ #}
+<div class="mb-6 grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900">👥 Recent students</h3>
+            <a href="{{ base_path }}/admin/students" class="text-xs font-semibold text-teal-700 hover:text-teal-600">All →</a>
+        </div>
+        {% if recent_students is empty %}
+        <p class="text-sm text-slate-500">No students yet.</p>
+        {% else %}
+        <div class="divide-y divide-slate-50">
+            {% for s in recent_students %}
+            <a href="{{ base_path }}/admin/students/{{ s.id }}" class="flex items-center gap-3 py-2.5">
+                <div class="min-w-0 flex-1">
+                    <div class="truncate text-sm font-semibold text-slate-800">{{ s.name }}</div>
+                    <div class="truncate text-xs text-slate-400">{{ s.reg_no }}{% if s.batch %} · {{ s.batch }}{% endif %}</div>
+                </div>
+                {% if s.status == 'registered' %}
+                <span class="shrink-0 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700">Registered</span>
+                {% elseif s.status == 'blocked' %}
+                <span class="shrink-0 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-600">Blocked</span>
+                {% else %}
+                <span class="shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Pending</span>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+        <div class="mb-4 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900">💳 Recent payments</h3>
+            <a href="{{ base_path }}/admin/payments" class="text-xs font-semibold text-teal-700 hover:text-teal-600">All →</a>
+        </div>
+        {% if recent_payments is empty %}
+        <p class="text-sm text-slate-500">No payments yet.</p>
+        {% else %}
+        <div class="divide-y divide-slate-50">
+            {% for p in recent_payments %}
+            <div class="flex items-center gap-3 py-2.5">
+                <div class="min-w-0 flex-1">
+                    <div class="truncate text-sm font-semibold text-slate-800">{{ p.student }}</div>
+                    <div class="truncate text-xs text-slate-400">{{ p.course }} · {{ p.trx_id }}</div>
+                </div>
+                <span class="shrink-0 text-sm font-bold text-slate-800">৳ {{ p.amount|number_format(0) }}</span>
+                {% if p.status == 'verified' %}
+                <span class="shrink-0 rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700">✓</span>
+                {% elseif p.status == 'rejected' %}
+                <span class="shrink-0 rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-600">✕</span>
+                {% else %}
+                <span class="shrink-0 rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">⏳</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

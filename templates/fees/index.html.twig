@@ -1,117 +1,109 @@
 {% extends 'app/layout.html.twig' %}
 
 {% block page_title %}Fees & Payments{% endblock %}
+{% block page_heading %}Fees & Payments{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-between mb-6">
-    <div>
-        <h1 class="text-2xl font-extrabold text-slate-900">Fees & Payments</h1>
-        <p class="text-sm text-slate-500 mt-1">Your course fees and payment history.</p>
-    </div>
-</div>
+<p class="mb-6 text-sm text-slate-500">Your course fees and payment history.</p>
 
 {% if data.courses is empty %}
-<div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-8 text-center">
-    <p class="text-slate-500">You are not enrolled in any course yet, so there are no fees to show.</p>
+<div class="rounded-2xl bg-white p-12 text-center ring-1 ring-slate-200/70">
+    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    </div>
+    <h2 class="text-lg font-bold text-slate-800">No fees to show</h2>
+    <p class="mt-1 text-sm text-slate-500">You are not enrolled in any course yet, so there are no fees to show.</p>
 </div>
 {% else %}
 
-<div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-2xl ring-1 ring-slate-100 p-4">
-        <div class="text-sm text-slate-500">Total fee</div>
-        <div class="text-2xl font-extrabold text-slate-900 mt-1">৳ {{ data.total.fee|number_format(0) }}</div>
+<div class="mb-6 grid grid-cols-3 gap-3 sm:gap-4">
+    <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70">
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total fee</div>
+        <div class="mt-1 text-2xl font-extrabold text-slate-900">৳ {{ data.total.fee|number_format(0) }}</div>
     </div>
-    <div class="bg-emerald-50 ring-1 ring-emerald-200 rounded-2xl p-4">
-        <div class="text-sm text-emerald-700">Paid</div>
-        <div class="text-2xl font-extrabold text-emerald-600 mt-1">৳ {{ data.total.paid|number_format(0) }}</div>
+    <div class="rounded-2xl bg-teal-50 p-4 ring-1 ring-teal-200">
+        <div class="text-xs font-semibold uppercase tracking-wider text-teal-600">Paid</div>
+        <div class="mt-1 text-2xl font-extrabold text-teal-600">৳ {{ data.total.paid|number_format(0) }}</div>
     </div>
-    <div class="bg-rose-50 ring-1 ring-rose-200 rounded-2xl p-4">
-        <div class="text-sm text-rose-700">Due</div>
-        <div class="text-2xl font-extrabold text-rose-600 mt-1">৳ {{ data.total.due|number_format(0) }}</div>
+    <div class="rounded-2xl bg-rose-50 p-4 ring-1 ring-rose-200">
+        <div class="text-xs font-semibold uppercase tracking-wider text-rose-500">Due</div>
+        <div class="mt-1 text-2xl font-extrabold text-rose-600">৳ {{ data.total.due|number_format(0) }}</div>
     </div>
 </div>
 
+<div class="mb-6 space-y-4">
 {% for c in data.courses %}
-<div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-6 mb-6">
-    <div class="flex items-start justify-between">
-        <div>
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6">
+        <div class="flex flex-wrap items-start justify-between gap-2">
             <h2 class="font-bold text-slate-900">{{ c.course }}</h2>
-            <p class="text-xs text-slate-500 mt-0.5">{{ batch|default('') }}</p>
+            {% if c.full_paid %}
+            <span class="rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-teal-700 ring-1 ring-teal-200">Fee completed</span>
+            {% endif %}
         </div>
-        {% if c.full_paid %}
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Fee completed</span>
-        {% endif %}
-    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
-        <div class="rounded-xl bg-slate-50 p-3">
-            <div class="text-xs text-slate-500">Total fee</div>
-            <div class="font-bold text-slate-800">৳ {{ c.fee|number_format(0) }}</div>
+        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="rounded-xl bg-slate-50 p-3">
+                <div class="text-xs text-slate-500">Total fee</div>
+                <div class="font-bold text-slate-800">৳ {{ c.fee|number_format(0) }}</div>
+            </div>
+            <div class="rounded-xl bg-teal-50 p-3">
+                <div class="text-xs text-teal-600">Paid</div>
+                <div class="font-bold text-teal-700">৳ {{ c.paid|number_format(0) }}</div>
+            </div>
+            <div class="rounded-xl {{ c.due > 0 ? 'bg-rose-50' : 'bg-teal-50' }} p-3">
+                <div class="text-xs {{ c.due > 0 ? 'text-rose-500' : 'text-teal-600' }}">Due</div>
+                <div class="font-bold {{ c.due > 0 ? 'text-rose-700' : 'text-teal-700' }}">৳ {{ c.due|number_format(0) }}</div>
+            </div>
         </div>
-        <div class="rounded-xl bg-emerald-50 p-3">
-            <div class="text-xs text-emerald-700">Paid</div>
-            <div class="font-bold text-emerald-700">৳ {{ c.paid|number_format(0) }}</div>
-        </div>
-        {% if c.due > 0 %}
-        <div class="rounded-xl bg-rose-50 p-3">
-            <div class="text-xs text-rose-700">Due</div>
-            <div class="font-bold text-rose-700">৳ {{ c.due|number_format(0) }}</div>
-        </div>
-        {% else %}
-        <div class="rounded-xl bg-emerald-50 p-3">
-            <div class="text-xs text-emerald-700">Due</div>
-            <div class="font-bold text-emerald-700">৳ 0</div>
-        </div>
-        {% endif %}
-    </div>
 
-    <div class="mt-4 space-y-2 text-sm">
-        {% if c.deadline %}
-        <div class="flex items-center justify-between">
-            <span class="text-slate-500">Payment deadline</span>
-            <span class="font-semibold {{ c.deadline_passed ? 'text-rose-600' : 'text-slate-800' }}">{{ c.deadline }}</span>
+        <div class="mt-4 space-y-2 text-sm">
+            {% if c.deadline %}
+            <div class="flex items-center justify-between">
+                <span class="text-slate-500">Payment deadline</span>
+                <span class="font-semibold {{ c.deadline_passed ? 'text-rose-600' : 'text-slate-800' }}">{{ c.deadline }}</span>
+            </div>
+            {% endif %}
+            {% if c.deadline_passed %}
+            <div class="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700">Your due fee payment deadline has passed.</div>
+            {% endif %}
+            {% if c.last_payment %}
+            <div class="flex items-center justify-between">
+                <span class="text-slate-500">Last payment</span>
+                <span class="font-semibold text-slate-800">৳ {{ c.last_payment.amount|number_format(0) }} · {{ c.last_payment.date }} · <span class="font-mono">{{ c.last_payment.trx_id }}</span></span>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-        {% if c.deadline_passed %}
-        <div class="rounded-lg bg-rose-50 text-rose-700 text-xs px-3 py-2">Your due fee payment deadline has passed.</div>
-        {% endif %}
-        {% if c.last_payment %}
-        <div class="flex items-center justify-between">
-            <span class="text-slate-500">Last payment</span>
-            <span class="font-semibold text-slate-800">৳ {{ c.last_payment.amount|number_format(0) }} · {{ c.last_payment.date }} · {{ c.last_payment.trx_id }}</span>
-        </div>
-        {% endif %}
-    </div>
 
-    <div class="mt-4 flex items-center gap-3">
-        <a href="#pay-form" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5">
-            Submit new payment
-        </a>
-        {% if c.pending_count > 0 %}
-        <span class="text-xs text-amber-600">⏳ {{ c.pending_count }} payment(s) under review</span>
-        {% endif %}
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+            <a href="#pay-form" class="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-600">
+                Submit new payment
+            </a>
+            {% if c.pending_count > 0 %}
+            <span class="text-xs font-medium text-amber-600">⏳ {{ c.pending_count }} payment(s) under review</span>
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endfor %}
+</div>
 
 {% endif %}
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="lg:col-span-2 bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-6">
-        <h2 class="font-bold text-slate-900 mb-4">Payment history</h2>
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6 lg:col-span-2">
+        <h2 class="mb-4 font-bold text-slate-900">Payment history</h2>
         {% if history is empty %}
         <p class="text-sm text-slate-500">No payments yet.</p>
         {% else %}
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="text-left text-xs text-slate-500 border-b border-slate-100">
-                        <th class="py-2 pr-3">Date</th>
-                        <th class="py-2 pr-3">Course</th>
-                        <th class="py-2 pr-3">TRX ID</th>
-                        <th class="py-2 pr-3">Sender</th>
-                        <th class="py-2 pr-3 text-right">Amount</th>
-                        <th class="py-2">Status</th>
+                    <tr class="border-b border-slate-100 text-left text-xs uppercase tracking-wide text-slate-400">
+                        <th class="py-2.5 pr-3 font-bold">Date</th>
+                        <th class="py-2.5 pr-3 font-bold">Course</th>
+                        <th class="py-2.5 pr-3 font-bold">TRX ID</th>
+                        <th class="py-2.5 pr-3 font-bold">Sender</th>
+                        <th class="py-2.5 pr-3 text-right font-bold">Amount</th>
+                        <th class="py-2.5 font-bold">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,11 +116,11 @@
                         <td class="py-2.5 pr-3 text-right font-semibold text-slate-800">৳ {{ h.amount|number_format(0) }}</td>
                         <td class="py-2.5">
                             {% if h.status == 'verified' %}
-                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Verified</span>
+                            <span class="rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-bold text-teal-700 ring-1 ring-teal-200">Verified</span>
                             {% elseif h.status == 'pending' %}
-                            <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Under review</span>
+                            <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-700 ring-1 ring-amber-200">Under review</span>
                             {% else %}
-                            <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-xs font-bold">Rejected</span>
+                            <span class="rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-bold text-rose-700 ring-1 ring-rose-200">Rejected</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -139,11 +131,11 @@
         {% endif %}
     </div>
 
-    <div class="bg-white rounded-2xl ring-1 ring-slate-100 shadow-sm p-6" id="pay-form">
-        <h2 class="font-bold text-slate-900 mb-4">New payment</h2>
+    <div class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/70 sm:p-6" id="pay-form">
+        <h2 class="mb-4 font-bold text-slate-900">New payment</h2>
 
         {% if errors.course_id or errors.trx_id or errors.sender_number or errors.amount or errors.screenshot %}
-        <div class="mb-4 rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm text-rose-700">
+        <div class="mb-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-rose-200">
             There are some errors in the form — please fix them as instructed below.
         </div>
         {% endif %}
@@ -152,51 +144,51 @@
             <input type="hidden" name="_csrf" value="{{ csrf_token }}">
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Course *</label>
-                <select name="course_id" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">
+                <label class="mb-1 block text-sm font-medium text-slate-700">Course <span class="text-rose-500">*</span></label>
+                <select name="course_id" class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400">
                     <option value="">Select course</option>
                     {% for c in courses %}
                     <option value="{{ c.id }}" {{ old.course_id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
                     {% endfor %}
                 </select>
-                {% if errors.course_id %}<p class="text-xs text-rose-600 mt-1">{{ errors.course_id }}</p>{% endif %}
+                {% if errors.course_id %}<p class="mt-1 text-xs text-rose-600">{{ errors.course_id }}</p>{% endif %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Payment number (TRX ID) *</label>
+                <label class="mb-1 block text-sm font-medium text-slate-700">Payment number (TRX ID) <span class="text-rose-500">*</span></label>
                 <input type="text" name="trx_id" value="{{ old.trx_id }}"
-                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" placeholder="e.g. TRX1234567890">
-                {% if errors.trx_id %}<p class="text-xs text-rose-600 mt-1">{{ errors.trx_id }}</p>{% endif %}
+                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 {{ errors.trx_id ? 'border-rose-300 bg-rose-50' : '' }}" placeholder="e.g. TRX1234567890">
+                {% if errors.trx_id %}<p class="mt-1 text-xs text-rose-600">{{ errors.trx_id }}</p>{% endif %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Sender number *</label>
+                <label class="mb-1 block text-sm font-medium text-slate-700">Sender number <span class="text-rose-500">*</span></label>
                 <input type="text" name="sender_number" value="{{ old.sender_number }}"
-                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" placeholder="01XXXXXXXXX">
-                {% if errors.sender_number %}<p class="text-xs text-rose-600 mt-1">{{ errors.sender_number }}</p>{% endif %}
+                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 {{ errors.sender_number ? 'border-rose-300 bg-rose-50' : '' }}" placeholder="01XXXXXXXXX">
+                {% if errors.sender_number %}<p class="mt-1 text-xs text-rose-600">{{ errors.sender_number }}</p>{% endif %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Amount (৳) *</label>
+                <label class="mb-1 block text-sm font-medium text-slate-700">Amount (৳) <span class="text-rose-500">*</span></label>
                 <input type="text" name="amount" value="{{ old.amount }}"
-                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm" placeholder="2000">
-                {% if errors.amount %}<p class="text-xs text-rose-600 mt-1">{{ errors.amount }}</p>{% endif %}
+                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 {{ errors.amount ? 'border-rose-300 bg-rose-50' : '' }}" placeholder="2000">
+                {% if errors.amount %}<p class="mt-1 text-xs text-rose-600">{{ errors.amount }}</p>{% endif %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Screenshot (optional)</label>
+                <label class="mb-1 block text-sm font-medium text-slate-700">Screenshot (optional)</label>
                 <input type="file" name="screenshot" accept=".jpg,.jpeg,.png,.pdf"
                     class="w-full text-sm text-slate-600">
-                {% if errors.screenshot %}<p class="text-xs text-rose-600 mt-1">{{ errors.screenshot }}</p>{% endif %}
+                {% if errors.screenshot %}<p class="mt-1 text-xs text-rose-600">{{ errors.screenshot }}</p>{% endif %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Note (optional)</label>
+                <label class="mb-1 block text-sm font-medium text-slate-700">Note (optional)</label>
                 <textarea name="note" rows="2"
-                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm">{{ old.note }}</textarea>
+                    class="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400">{{ old.note }}</textarea>
             </div>
 
-            <button type="submit" class="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-3">
+            <button type="submit" class="w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-teal-600">
                 Submit payment
             </button>
         </form>

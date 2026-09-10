@@ -1,0 +1,96 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}{{ routine ? 'Edit class' : 'Add class' }}{% endblock %}
+{% block admin_heading %}{{ routine ? 'Edit class' : 'Add class' }}{% endblock %}
+
+{% block admin_content %}
+<div class="mx-auto max-w-xl">
+    <div class="rounded-2xl bg-white p-6 ring-1 ring-slate-200/70">
+        <form method="post" action="{{ routine ? base_path ~ '/admin/routines/' ~ routine.id ~ '/edit' : base_path ~ '/admin/routines/create' }}">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Batch *</label>
+                        <select name="batch_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                            <option value="">Select batch</option>
+                            {% for b in batches %}
+                            <option value="{{ b.id }}" {{ old.batch_id == b.id ? 'selected' : '' }}>{{ b.name }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if errors.batch_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.batch_id }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Course *</label>
+                        <select name="course_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                            <option value="">Select course</option>
+                            {% for c in courses %}
+                            <option value="{{ c.id }}" {{ old.course_id == c.id ? 'selected' : '' }}>{{ c.title }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if errors.course_id %}<p class="mt-1 text-xs text-rose-500">{{ errors.course_id }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Session date *</label>
+                    <input type="date" name="session_date" value="{{ old.session_date }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    {% if errors.session_date %}<p class="mt-1 text-xs text-rose-500">{{ errors.session_date }}</p>{% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Start time *</label>
+                        <input type="time" name="start_time" value="{{ old.start_time }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.start_time %}<p class="mt-1 text-xs text-rose-500">{{ errors.start_time }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">End time *</label>
+                        <input type="time" name="end_time" value="{{ old.end_time }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.end_time %}<p class="mt-1 text-xs text-rose-500">{{ errors.end_time }}</p>{% endif %}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Topic</label>
+                    <input type="text" name="topic" value="{{ old.topic }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Room</label>
+                        <input type="text" name="room" value="{{ old.room }}"
+                           class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-700">Mentor</label>
+                        <select name="mentor_id" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                            <option value="">Select mentor</option>
+                            {% for m in mentors %}
+                            <option value="{{ m.id }}" {{ old.mentor_id == m.id ? 'selected' : '' }}>{{ m.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-700">Meeting link</label>
+                    <input type="url" name="meeting_link" value="{{ old.meeting_link }}"
+                       class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+                        {% if errors.meeting_link %}<p class="mt-1 text-xs text-rose-500">{{ errors.meeting_link }}</p>{% endif %}
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">{{ routine ? 'Save changes' : 'Add class' }}</button>
+                    <a href="{{ base_path }}/admin/routines" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

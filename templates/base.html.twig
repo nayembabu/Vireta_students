@@ -14,7 +14,7 @@
     {# Google Fonts: Fraunces (display serif) + Manrope (body) #}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,600&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     {# Tailwind CSS (Play CDN - swap for a build in production) #}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,6 +25,7 @@
                     fontFamily: {
                         sans: ['Manrope', 'ui-sans-serif', 'system-ui', 'sans-serif'],
                         display: ['Fraunces', 'Georgia', 'serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
                     },
                 },
             },
@@ -36,7 +37,7 @@
 
     {% block head %}{% endblock %}
 </head>
-<body class="font-sans antialiased text-slate-800 bg-[#faf9f6]">
+<body class="font-sans antialiased text-slate-800 bg-[#f6f8f8]">
     {% block body %}{% endblock %}
 
     {# HTMX - server-driven interactivity #}

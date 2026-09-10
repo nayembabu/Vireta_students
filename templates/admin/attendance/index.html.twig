@@ -1,0 +1,76 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Attendance{% endblock %}
+{% block admin_heading %}Attendance{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <form method="get" action="{{ base_path }}/admin/attendance" class="flex flex-wrap items-center gap-2">
+        <select name="batch" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+            <option value="">All batches</option>
+            {% for b in batches %}
+            <option value="{{ b.id }}" {{ filters.batch == b.id ? 'selected' : '' }}>{{ b.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="date" name="date" value="{{ filters.date }}"
+               class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+        <select name="status" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+            <option value="">All status</option>
+            <option value="present" {{ filters.status == 'present' ? 'selected' : '' }}>Present</option>
+            <option value="late" {{ filters.status == 'late' ? 'selected' : '' }}>Late</option>
+            <option value="absent" {{ filters.status == 'absent' ? 'selected' : '' }}>Absent</option>
+            <option value="excused" {{ filters.status == 'excused' ? 'selected' : '' }}>Excused</option>
+        </select>
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
+    </form>
+    <a href="{{ base_path }}/admin/attendance/mark" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Mark attendance</a>
+</div>
+
+<div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                    <th class="px-4 py-3">Student</th>
+                    <th class="px-4 py-3">Course</th>
+                    <th class="px-4 py-3">Date</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Check-in</th>
+                    <th class="px-4 py-3 text-right">Override</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for r in items %}
+                <tr class="transition hover:bg-slate-50/60">
+                    <td class="px-4 py-3 font-semibold text-slate-800">{{ r.student }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ r.course ?? '—' }}{% if r.topic %} · {{ r.topic }}{% endif %}</td>
+                    <td class="px-4 py-3 text-xs text-slate-600">{{ r.session_date }}</td>
+                    <td class="px-4 py-3">
+                        {% if r.status == 'present' %}<span class="rounded-full bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700">Present</span>
+                        {% elseif r.status == 'late' %}<span class="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-700">Late</span>
+                        {% elseif r.status == 'absent' %}<span class="rounded-full bg-rose-50 px-2 py-0.5 text-[11px] font-bold text-rose-600">Absent</span>
+                        {% else %}<span class="rounded-full bg-sky-50 px-2 py-0.5 text-[11px] font-bold text-sky-700">Excused</span>{% endif %}
+                    </td>
+                    <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ r.check_in_time ?? '—' }}</td>
+                    <td class="px-4 py-3">
+                        <form method="post" action="{{ base_path }}/admin/attendance/{{ r.id }}/override" class="flex justify-end gap-1.5">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                            <select name="status" class="rounded-lg border border-slate-200 px-2 py-1 text-xs focus:border-teal-400 focus:outline-none">
+                                <option value="present" {{ r.status == 'present' ? 'selected' : '' }}>Present</option>
+                                <option value="late" {{ r.status == 'late' ? 'selected' : '' }}>Late</option>
+                                <option value="absent" {{ r.status == 'absent' ? 'selected' : '' }}>Absent</option>
+                                <option value="excused" {{ r.status == 'excused' ? 'selected' : '' }}>Excused</option>
+                            </select>
+                            <input type="time" name="check_in_time" value="{{ r.check_in_time }}" class="rounded-lg border border-slate-200 px-2 py-1 text-xs focus:border-teal-400 focus:outline-none">
+                            <button type="submit" class="rounded-lg bg-slate-900 px-2 py-1 text-xs font-semibold text-white transition hover:bg-slate-700">Save</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="px-4 py-8 text-center text-sm text-slate-400">No attendance records.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

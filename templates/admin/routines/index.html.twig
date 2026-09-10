@@ -1,0 +1,62 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block admin_title %}Routine{% endblock %}
+{% block admin_heading %}Routine{% endblock %}
+
+{% block admin_content %}
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <form method="get" action="{{ base_path }}/admin/routines" class="flex items-center gap-2">
+        <select name="batch" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-teal-400 focus:outline-none">
+            <option value="">All batches</option>
+            {% for b in batches %}
+            <option value="{{ b.id }}" {{ batch_id == b.id ? 'selected' : '' }}>{{ b.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">Filter</button>
+    </form>
+    <a href="{{ base_path }}/admin/routines/create" class="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-500">+ Add class</a>
+</div>
+
+<div class="overflow-hidden rounded-2xl bg-white ring-1 ring-slate-200/70">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+            <thead class="border-b border-slate-100 bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
+                <tr>
+                    <th class="px-4 py-3">Date</th>
+                    <th class="px-4 py-3">Time</th>
+                    <th class="px-4 py-3">Topic</th>
+                    <th class="px-4 py-3">Course</th>
+                    <th class="px-4 py-3">Batch</th>
+                    <th class="px-4 py-3">Room</th>
+                    <th class="px-4 py-3">Mentor</th>
+                    <th class="px-4 py-3 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                {% for r in items %}
+                <tr class="transition hover:bg-slate-50/60">
+                    <td class="px-4 py-3 font-semibold text-slate-800">{{ r.session_date }}</td>
+                    <td class="px-4 py-3 font-mono text-xs text-slate-600">{{ r.start_time|slice(0,5) }}-{{ r.end_time|slice(0,5) }}</td>
+                    <td class="px-4 py-3 text-slate-700">{{ r.topic ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ r.course ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ r.batch ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ r.room ?? '—' }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">{{ r.mentor ?? '—' }}</td>
+                    <td class="px-4 py-3">
+                        <div class="flex justify-end gap-1.5">
+                            <a href="{{ base_path }}/admin/routines/{{ r.id }}/edit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100" title="Edit">✏️</a>
+                            <form method="post" action="{{ base_path }}/admin/routines/{{ r.id }}/delete" onsubmit="return confirm('Delete this class?');">
+                                <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+                                <button type="submit" class="rounded-lg px-2 py-1 text-xs font-semibold text-slate-400 hover:bg-rose-50 hover:text-rose-500" title="Delete">🗑</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="px-4 py-8 text-center text-sm text-slate-400">No routine entries.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
